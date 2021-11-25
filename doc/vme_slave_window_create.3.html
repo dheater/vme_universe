@@ -1,0 +1,76 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_slave_window_create.3</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_slave_window_create</b> - Allocates a VMEbus Slave Window handle.
+</p>
+<h2>SYNOPSIS</h2>
+<b>int vme_slave_window_create
+(
+vme_bus_handle_t bus_handle, vme_slave_handle_t * window_handle, uint64_t vme_addr, int address_space, size_t size, int flags, void * phys_addr
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b>vme_bus_handle_t bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_init.3.html">vme_init</a>.
+</p></dd>
+<dt><b>vme_slave_handle_t * window_handle</b></dt>
+<dd><p>Pointer to the window handle to allocate.
+</p></dd>
+<dt><b>uint64_t vme_addr</b></dt>
+<dd><p>VMEbus address.
+</p></dd>
+<dt><b>int address_space</b></dt>
+<dd>
+<p>VMEbus address space. Valid values are:
+</p>
+- VME_A16<br>
+- VME_A24<br>
+- VME_A32<br>
+</dd>
+<dt><b>size_t size</b></dt>
+<dd><p>Minimum size of the window, in bytes.
+</p></dd>
+<dt><b>int flags</b></dt>
+<dd>
+<p>Flags indicating special window features. If a value is specified, it must be a bitwise "OR" of the following values for the Tundra Universe II device:
+</p>
+- VME_CTL_PWEN - Posted writes enabled.<br>
+- VME_CTL_PREN - Prefetch reads enabled.<br>
+- VME_CTL_64_BIT - Enable 64-bit PCI transactions.<br>
+- VME_CTL_RMW - Enable PCI bus lock on VMEbus read-modify-write cycles.<br><p>One of the following address modes can be used. If a mode is not specified, the window responds to accesses in either mode.
+</p>
+- VME_CTL_PROGRAM_ONLY - Respond to program address modifiers only.<br>
+- VME_CTL_DATA_ONLY - Respond to data address modifiers only.<br><p>One of the following address privileges can be used. If a privledge is not specified, the window responds to accesses of either privledge.
+</p>
+- VME_CTL_SUPER_ONLY - Respond to supervisor address modifiers only.<br>
+- VME_CTL_USER_ONLY - Respond to user address modifiers only.<br><p>One of the following PCI address spaces can be used. If a flag is not specified, the window maps to PCI memory space.
+</p>
+- VME_CTL_PCI_CONFIG - Access PCI bus using configuration cycles.<br>
+- VME_CTL_PCI_IO_SPACE - Access PCI bus I/O space.<br>
+</dd>
+<dt><b>void * phys_addr</b></dt>
+<dd><p>Specifies the local physical address to which the VMEbus window should translate.  If NULL, the driver attempts to allocate physical RAM.
+</p></dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Allocates a VMEbus Slave Window handle. If a suitable window is already configured within the bridge device, then that window will be used, otherwise, a VMEbus window is created to access the specified address and address space.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>0 on success or -1 on failure
+</p>
+</p>
+<h2>NOTES</h2>
+<p>Setting VME_CTL_64_BIT results in a performance degradation when accessing 32-bit targets.
+</p>
+<p>Setting VME_CTL_64_BIT results in performance degradation when accessing 64-bit targets if less than 64 bits of data are being transferred.
+</p>
+<p>Enabling VME_CTL_RMW for a Slave Window may reduce performance for all transactions through that Slave Window.
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_slave_window_map.3.html">vme_slave_window_map</a>(3), <a href="vme_slave_window_phys_addr.3.html">vme_slave_window_phys_addr</a>(3), <a href="vme_slave_window_release.3.html">vme_slave_window_release</a>(3), <a href="vme_slave_window_unmap.3.html">vme_slave_window_unmap</a>(3)</body>
+</html>

@@ -1,0 +1,66 @@
+
+.TH "vme_set_bus_timeout" 3
+
+.SH "NAME"
+vme_set_bus_timeout - Sets the VMEbus timeout value.
+
+
+.SH "SYNOPSIS"
+int vme_set_bus_timeout
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+int to
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B int to
+.br
+.in +5
+
+.br
+VMEbus timeout value, in microseconds. A value of 0 indicates that the timer is disabled. Valid values are 0, 16, 32, 64, 128, 256, 512, and 1024.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Sets the VMEbus timeout value.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_get_bus_timeout(3)
+.br

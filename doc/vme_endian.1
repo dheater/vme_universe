@@ -1,0 +1,55 @@
+
+.TH "vme_endian" 1
+
+.SH "NAME"
+vme_endian - Displays or changes configuration of the hardware endian conversion feature.
+
+
+.SH "SYNOPSIS"
+vme_endian [-b value] [-m value] [-s value]
+.SH "OPTIONS"
+
+.B -b value
+.in +5
+
+
+.br
+Sets the endian conversion bypass. A value of 1 bypasses the endian conversion. A value of 0 enables endian conversion.
+
+.br
+
+
+.in
+
+.B -m value
+.in +5
+
+
+.br
+Sets the master endian conversion enable. A value of 1 enables Master Window endian conversion. A value of 0 disables Master Window endian conversion.
+
+.br
+
+
+.in
+
+.B -s value
+.in +5
+
+
+.br
+Sets the slave endian conversion enable. A value of 1 enables Slave Window endian conversion. A value of 0 disables Slave Window endian conversion.
+.br
+
+
+.in
+
+
+.SH "DESCRIPTION"
+
+.br
+Displays or changes configuration of the hardware endian conversion feature. If no arguments are specified, the current configuration is printed. If -b, -m, or -s is specified along with a value 0 or 1, that feature is turned off or on.
+
+.br
+
+.br

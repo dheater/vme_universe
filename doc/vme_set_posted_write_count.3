@@ -1,0 +1,94 @@
+
+.TH "vme_set_posted_write_count" 3
+
+.SH "NAME"
+vme_set_posted_write_count - Sets the transfer count at which the PCI slave-channel-posted write FIFO releases the VMEbus master interface.
+
+
+.SH "SYNOPSIS"
+ vme_set_posted_write_count
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+int pwon
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B int pwon
+.br
+.in +5
+
+.br
+Transfer count, in number of bytes. A count of 0 indicates early release of BBSY signal. Valid values are:
+
+.br
+
+.nf
+- 0
+.fi
+
+.nf
+- 128
+.fi
+
+.nf
+- 256
+.fi
+
+.nf
+- 512
+.fi
+
+.nf
+- 1024
+.fi
+
+.nf
+- 2048
+.fi
+
+.nf
+- 4096
+.fi
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Sets the transfer count at which the PCI slave-channel-posted write FIFO releases the VMEbus master interface.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_get_posted_write_count(3)
+.br

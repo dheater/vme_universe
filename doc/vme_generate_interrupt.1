@@ -1,0 +1,81 @@
+
+.TH "vme_generate_interrupt" 1
+
+.SH "NAME"
+vme_generate_interrupt - Generates interrupts to the VMEbus.
+
+
+.SH "SYNOPSIS"
+vme_generate_interrupt [-l level] [-v vector]
+.SH "OPTIONS"
+
+.B -l level
+.in +5
+
+
+.br
+VMEbus interrupt level. Possible values are:
+
+.br
+
+
+.nf
+- VME_INTERRUPT_VIRQ1
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ2
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ3
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ4
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ5
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ6
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ7
+.fi
+
+
+.in
+
+.B -v vector
+.in +5
+
+
+.br
+VMEbus interrupt vector.
+
+.br
+
+
+.in
+
+
+.SH "DESCRIPTION"
+
+.br
+Generates interrupts to the VMEbus. Only VME interrupt levels can be generated.
+
+.br
+
+.SH "SEE ALSO"
+vme_catch_interrupt(1)
+.br

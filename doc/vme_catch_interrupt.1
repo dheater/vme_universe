@@ -1,0 +1,184 @@
+
+.TH "vme_catch_interrupt" 1
+
+.SH "NAME"
+vme_catch_interrupt - Sets up an interrupt handler to retrieve VMEbus interrupts.
+
+
+.SH "SYNOPSIS"
+vme_catch_interrupt [-f flags] [-l level] [-v vector]
+.SH "OPTIONS"
+
+.B -f flags
+.in +5
+
+
+.br
+Flags to be passed to the vme_interrupt_attach(3)
+ function. Possible values are:
+
+.br
+
+
+.nf
+- VME_INTERRUPT_SIGEVENT - Pass a sigevent struct to vme_interrupt_attach
+.fi
+
+
+.nf
+- VME_INTERRUPT_BLOCKING - vme_interrupt_attach blocks (default)
+.fi
+
+
+.in
+
+.B -l level
+.in +5
+
+
+.br
+VMEbus interrupt level. Possible values are:
+
+.br
+
+
+.nf
+- VME_INTERRUPT_VOWN
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ1
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ2
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ3
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ4
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ5
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ6
+.fi
+
+
+.nf
+- VME_INTERRUPT_VIRQ7
+.fi
+
+
+.nf
+- VME_INTERRUPT_DMA
+.fi
+
+
+.nf
+- VME_INTERRUPT_LERR
+.fi
+
+
+.nf
+- VME_INTERRUPT_VERR
+.fi
+
+
+.nf
+- VME_INTERRUPT_SW_IACK
+.fi
+
+
+.nf
+- VME_INTERRUPT_SW_INT
+.fi
+
+
+.nf
+- VME_INTERRUPT_SYSFAIL
+.fi
+
+
+.nf
+- VME_INTERRUPT_ACFAIL
+.fi
+
+
+.nf
+- VME_INTERRUPT_MBOX0
+.fi
+
+
+.nf
+- VME_INTERRUPT_MBOX1
+.fi
+
+
+.nf
+- VME_INTERRUPT_MBOX2
+.fi
+
+
+.nf
+- VME_INTERRUPT_MBOX3
+.fi
+
+
+.nf
+- VME_INTERRUPT_LM0
+.fi
+
+
+.nf
+- VME_INTERRUPT_LM1
+.fi
+
+
+.nf
+- VME_INTERRUPT_LM2
+.fi
+
+
+.nf
+- VME_INTERRUPT_LM3
+.fi
+
+
+.in
+
+.B -v vector
+.in +5
+
+
+.br
+VMEbus interrupt vector
+
+.br
+
+
+.in
+
+
+.SH "DESCRIPTION"
+
+.br
+Sets up an interrupt handler to retrieve VMEbus interrupts.
+
+.br
+
+.SH "SEE ALSO"
+vme_generate_interrupt(1)
+.br

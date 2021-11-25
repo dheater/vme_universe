@@ -1,0 +1,242 @@
+
+.TH "vme_poke" 1
+
+.SH "NAME"
+vme_poke - Writes hexadecimal values to the VMEbus using memory-mapped registers.
+
+
+.SH "SYNOPSIS"
+vme_poke [-a addr_mod] [-A vme_addr] [-d dwidth] [-f flags] [-p phys_addr] [-F file]
+.SH "OPTIONS"
+
+.B -a addr_mod
+.in +5
+
+
+.br
+VMEbus address modifer. Possible values are:
+.br
+
+
+.nf
+- VME_A16S - Short supervisory access.
+.fi
+
+
+.nf
+- VME_A16U - Short nonprivileged access
+.fi
+
+
+.nf
+- VME_A24SB - Standard supervisory block transfer
+.fi
+
+
+.nf
+- VME_A24SD - Standard supervisory data access
+.fi
+
+
+.nf
+- VME_A24SMB - Standard supervisory multiplex block transfer
+.fi
+
+
+.nf
+- VME_A24SP - Standard supervisory program access
+.fi
+
+
+.nf
+- VME_A24UB - Standard nonprivileged block transfer
+.fi
+
+
+.nf
+- VME_A24UD - Standard nonprivileged data access
+.fi
+
+
+.nf
+- VME_A24UMB - Standard nonprivileged multiplex block transfer
+.fi
+
+
+.nf
+- VME_A24UP - Standard nonprivileged program access
+.fi
+
+
+.nf
+- VME_A32SB - Extended supervisory block transfer
+.fi
+
+
+.nf
+- VME_A32SD - Extended supervisory data access
+.fi
+
+
+.nf
+- VME_A32SMB - Extended supervisory multiplex block transfer
+.fi
+
+
+.nf
+- VME_A32SP - Extended supervisory program access
+.fi
+
+
+.nf
+- VME_A32UB - Extended nonprivileged block transfer
+.fi
+
+
+.nf
+- VME_A32UD - Extended nonprivileged data access
+.fi
+
+
+.nf
+- VME_A32UMB - Extended nonprivileged multiplex block transfer
+.fi
+
+
+.nf
+- VME_A32UP - Extended nonprivileged program access
+.fi
+
+
+.in
+
+.B -A vme_addr
+.in +5
+
+
+.br
+VMEbus address to begin transfer.
+.br
+
+
+.in
+
+.B -d dwidth
+.in +5
+
+
+.br
+Transfer data width.  Possible values are:
+.br
+
+
+.nf
+- VME_D8
+.fi
+
+
+.nf
+- VME_D16
+.fi
+
+
+.nf
+- VME_D32
+.fi
+
+
+.nf
+- VME_D64
+.fi
+
+
+.in
+
+.B -f flags
+.in +5
+
+
+.br
+Flags to pass to the vme_master_window_create(3)
+ function. The following constants may be OR'ed together:
+
+.br
+
+
+.nf
+- VME_CTL_PWEN - Enable posted writes
+.fi
+
+
+.nf
+- VME_CTL_EXCLUSIVE - This window will not be shared
+.fi
+
+
+.br
+One of the following values for max data width can be used. If a value is not specifed, a default max data width is selected.
+.br
+
+
+.nf
+- VME_CTL_MAX_DW_64
+.fi
+
+
+.nf
+- VME_CTL_MAX_DW_32
+.fi
+
+
+.nf
+- VME_CTL_MAX_DW_16
+.fi
+
+
+.nf
+- VME_CTL_MAX_DW_8
+.fi
+
+
+.nf
+- VME_CTL_PCI_IO_SPACE - Open the window to PCI I/O space
+.fi
+
+
+.in
+
+.B -p phys_addr
+.in +5
+
+
+.br
+Specifies the local physical address to which the VMEbus window should translate. Not applicable with Solaris.
+
+.br
+
+
+.in
+
+.B -F file
+.in +5
+
+
+.br
+File containing the hexdata to transfer.
+
+.br
+
+
+.in
+
+
+.SH "DESCRIPTION"
+
+.br
+Writes hexadecimal values to the VMEbus using memory-mapped registers. Hex values can be input on the command line, read from a file or taken from stdin.
+
+.br
+
+.SH "SEE ALSO"
+vme_peek(1)
+.br

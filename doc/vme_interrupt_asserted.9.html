@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_interrupt_asserted.9</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_interrupt_asserted</b> - Test to see if an interrupt level is asserted. Not applicable to Solaris.
+</p>
+<h2>SYNOPSIS</h2>
+<b>int vme_interrupt_asserted
+(
+vme_bus_handle_t bus_handle, vme_interrupt_handle_t interrupt_handle
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b>vme_bus_handle_t bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_init.3.html">vme_init</a>.
+</p></dd>
+<dt><b>vme_interrupt_handle_t interrupt_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a>.
+</p></dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Test to see if an interrupt level is asserted.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>0 on success, or -1 on failure.
+</p>
+</p>
+<h2>NOTES</h2>
+<p>The handle used with this function must have been allocated with the flag VME_INTERRUPT_RESERVE.
+</p>
+<p>This function is olny available from within the Linux kernel.
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a>(3), <a href="vme_interrupt_clear.9.html">vme_interrupt_clear</a>(9), <a href="vme_interrupt_disable.9.html">vme_interrupt_disable</a>(9), <a href="vme_interrupt_enable.9.html">vme_interrupt_enable</a>(9), <a href="vme_interrupt_generate.3.html">vme_interrupt_generate</a>(3), <a href="vme_interrupt_irq.9.html">vme_interrupt_irq</a>(9), <a href="vme_interrupt_release.3.html">vme_interrupt_release</a>(3), <a href="vme_interrupt_vector.9.html">vme_interrupt_vector</a>(9)</body>
+</html>

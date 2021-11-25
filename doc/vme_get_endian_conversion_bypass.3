@@ -1,0 +1,66 @@
+
+.TH "vme_get_endian_conversion_bypass" 3
+
+.SH "NAME"
+vme_get_endian_conversion_bypass - Returns the endian conversion feature's bypass status.
+
+
+.SH "SYNOPSIS"
+int vme_get_endian_conversion_bypass
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+int * bypass
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B int * bypass
+.br
+.in +5
+
+.br
+A value of 0 indicates that endian conversion is enabled. A value of 1 indicates that endian conversion is bypassed. 
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Returns the endian conversion feature's bypass status.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_get_master_endian_conversion(3), vme_get_slave_endian_conversion(3), vme_set_endian_conversion_bypass(3), vme_set_master_endian_conversion(3), vme_set_slave_endian_conversion(3)
+.br

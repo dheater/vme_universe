@@ -1,0 +1,149 @@
+
+.TH "vme_read_modify_write" 3
+
+.SH "NAME"
+vme_read_modify_write - Performs a read/modify/write cycle on the VMEbus.
+
+
+.SH "SYNOPSIS"
+int vme_read_modify_write
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_master_handle_t window_handle,
+.br
+size_t offset,
+.br
+int dw,
+.br
+uint64_t mask,
+.br
+uint64_t cmp,
+.br
+uint64_t swap
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_master_handle_t window_handle
+.br
+.in +5
+
+.br
+Window handle allocated by vme_master_window_create(3)
+.
+
+.br
+
+.in
+.br
+
+.B size_t offset
+.br
+.in +5
+
+.br
+Offset from the window base.
+
+.br
+
+.in
+.br
+
+.B int dw
+.br
+.in +5
+
+.br
+Access data width. Possbile values are:
+
+.br
+
+.nf
+- VME_D8
+.fi
+
+.nf
+- VME_D16
+.fi
+
+.nf
+- VME_D32
+.fi
+
+.in
+.br
+
+.B uint64_t mask
+.br
+.in +5
+
+.br
+Mask of bits to be compared.
+
+.br
+
+.in
+.br
+
+.B uint64_t cmp
+.br
+.in +5
+
+.br
+Bit value to compare the read value against.
+
+.br
+
+.in
+.br
+
+.B uint64_t swap
+.br
+.in +5
+
+.br
+Bit values to write to bits that compared true.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Performs a read/modify/write cycle on the VMEbus. The cycle is performed by reading a value from the VMEbus and bitwise-comparing the masked values (true/false) with the contents of cmp. All true bits are swapped with the contents of the swap register.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_master_window_create(3), vme_master_window_release(3)
+.br

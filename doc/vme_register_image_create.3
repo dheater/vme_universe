@@ -1,0 +1,151 @@
+
+.TH "vme_register_image_create" 3
+
+.SH "NAME"
+vme_register_image_create - Enables a VMEbus register access image.
+
+
+.SH "SYNOPSIS"
+int vme_register_image_create
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_vrai_handle_t * window_handle,
+.br
+uint64_t vme_addr,
+.br
+int as,
+.br
+int flags
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_vrai_handle_t * window_handle
+.br
+.in +5
+
+.br
+Pointer to the window handle to allocate.
+
+.br
+
+.in
+.br
+
+.B uint64_t vme_addr
+.br
+.in +5
+
+.br
+VMEbus address.
+
+.br
+
+.in
+.br
+
+.B int as
+.br
+.in +5
+
+.br
+VMEbus address space. Valid values are:
+
+.br
+
+.nf
+- VME_A16
+.fi
+
+.nf
+- VME_A24
+.fi
+
+.nf
+- VME_A32
+.fi
+
+.in
+.br
+
+.B int flags
+.br
+.in +5
+
+.br
+Flags indicating special window features. A value of 0 indicates that driver default values will be used. If a value is specified, it must be a bitwise "OR" of the following values for the Tundra Universe II device.
+
+.br
+
+.br
+One of the following address modes can be used. If a mode is not specified, the window responds to accesses in either mode.
+
+.br
+
+.nf
+- VME_CTL_PROGRAM_ONLY - Respond to program address modifiers only.
+.fi
+
+.nf
+- VME_CTL_DATA_ONLY - Respond to data address modifiers only.
+.fi
+
+.br
+One of the following address privileges can be used. If a privledge is not specified, the window responds to accesses of either privledge.
+
+.br
+
+.nf
+- VME_CTL_SUPER_ONLY - Respond to supervisor address modifiers only.
+.fi
+
+.nf
+- VME_CTL_USER_ONLY - Respond to user address modifiers only.
+.fi
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Enables a VMEbus register access image.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "NOTES"
+Only one VMEbus register access image can exist at any time.
+
+.br
+
+.SH "SEE ALSO"
+vme_register_image_release(3)
+.br

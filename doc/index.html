@@ -1,0 +1,1807 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15"><title>VME_UNIVERSE: VMEbus Driver and Tools for Linux
+</title></head><body leftmargin="10" rightmargin="0" topmargin="0" marginheight="0" bgcolor="#ffffff"><table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td><a href="http://www.gefanuc.com/embedded"><img border="0" src="gefes-logo.jpg"></a></td></tr><tr><td valign="top" align="right"><table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td width="100%" valign="top" align="left"><br><h1>VME_UNIVERSE: VMEbus Driver and Tools for Linux
+</h1><h2>Contents:</h2><a href="#doc_chap1">Abstract</a><br><a href="#doc_chap2">Installation</a><br><a href="#doc_chap3">Loading and Unloading the Module</a><br><a href="#doc_chap4">Utility Programs</a><br><a href="#doc_chap5">Writing Applications Using the vme_universe Application Program Interface (API)</a><br><a href="#doc_chap6">Master Windows</a><br><a href="#doc_chap7">Slave Windows</a><br><a href="#doc_chap8">Direct Memory Access (DMA)</a><br><a href="#doc_chap9">Interrupts</a><br><a href="#doc_chap10">Using Module Parameters</a><br><a href="#doc_chap11">Accessing the VMEbus Using a Kernel Module</a><br><a href="#doc_chap12">Reserving RAM at Boot Time</a><br><a href="#doc_chap13">Debugging Tips</a><br><a href="#doc_chap14">Changes Since Version 2.x</a><br><a href="#doc_chap15">License</a><br><h2><a name="doc_chap1"></a>Abstract</h2>
+<p>This document describes installation, configuration and usage of the <font color="#330099"><tt>vme_universe</tt></font> project for devices using the Tundra Universe II VMEbus-PCI bridge. The <font color="#330099"><tt>vme_universe</tt></font> project provides a loadable Linux device driver module, an API library for accessing the VMEbus and a set of utilities for quick access to the VMEbus. The utilities also serve as C code examples for programmatically accessing the VMEbus.
+</p>
+<p>This document assumes that you have some knowledge of the Linux operating system, C programming, and the VMEbus protocol.
+</p>
+<h2><a name="doc_chap2"></a>Installation</h2><h3><font color="#330099"><a name="_sect1">Building</a></font></h3>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffbbbb"><p><b>Warning: </b>Linux kernel source code must be installed to build the driver module.
+</p></td></tr></table>
+<p>The driver, library and all utilities are supplied as source code. To use the <font color="#330099"><tt>vme_universe</tt></font> driver and tools, they must first be compiled (built) into executable code and installed. The next code listing illustrates how to compile and install the <font color="#330099"><tt>vme_universe</tt></font> project code.
+</p>
+<a name="doc_pre1"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 1: Compiling and Installing the VME_UNIVERSE Project</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// From the vme_universe base directory execute:</font>
+<font color="#330099"><b>sh$ </b>make</font>
+<font color="#330099"><b>sh# </b>make install</font>
+</pre></td></tr></table>
+<h3><font color="#330099"><a name="_sect2">Verifying the Installation</a></font></h3>
+<p>If the project is built and installed correctly, you should have the following files are on your system:
+</p>
+<a name="doc_pre2"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 2: Verify the Installation</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// This is the driver module.  Make sure you use `uname -r`, not 'uname -r'.</font>
+<font color="#330099"><b>sh$ </b>ls /lib/modules/`uname -r`/extra/</font>
+<font color="#330099">vme_universe.ko</font>
+<font color="#ff0000">// This is the library</font>
+<font color="#330099"><b>sh$ </b>ls /usr/lib/libvme*</font>
+<font color="#330099">/usr/lib/libvme.so    /usr/lib/libvme.so.3   /usr/lib/libvme.so.3.3 </font>
+<font color="#ff0000">// These are the header files</font>
+<font color="#330099"><b>sh$ </b>ls /usr/include/vme</font>
+<font color="#330099">universe.h  vmi_api.h  vme.h  vmivme.h</font>
+<font color="#ff0000">// These are the utilities</font>
+<font color="#330099"><b>sh$ </b>ls /usr/bin/vme*</font>
+<font color="#330099">/usr/bin/vme_acquire_bus           /usr/bin/vme_poke
+/usr/bin/vme_catch_interrupt       /usr/bin/vme_release_bus
+/usr/bin/vme_dma_read              /usr/bin/vme_rmw
+/usr/bin/vme_dma_write             /usr/bin/vme_slave_peek
+/usr/bin/vme_endian                /usr/bin/vme_slave_poke
+/usr/bin/vme_generate_interrupt    /usr/bin/vme_sysreset
+/usr/bin/vme_peek
+</font>
+</pre></td></tr></table>
+<h2><a name="doc_chap3"></a>Loading and Unloading the Module</h2>
+<p>Use the <font color="#330099"><tt>modprobe</tt></font> command to load the driver module by entering <font color="#330099"><tt>modprobe vme_universe</tt></font>.
+</p>
+<p>Use the <font color="#330099"><tt>lsmod</tt></font> command command to verify that the module loaded successfully. When you enter <font color="#330099"><tt>lsmod</tt></font>, the module name <font>vme_universe</font> should appear in the output.
+</p>
+<p>To unload the module, enter <font color="#330099"><tt>modprobe -r vme_universe</tt></font>.
+</p>
+<h2><a name="doc_chap4"></a>Utility Programs</h2><h3><font color="#330099"><a name="_sect1">Utilities</a></font></h3>
+<p>The following VMEbus utilities are supplied to enable quick access to the VMEbus.
+</p>
+<a href="vme_acquire_bus.1.html">vme_acquire_bus</a><br>
+<a href="vme_catch_interrupt.1.html">vme_catch_interrupt</a><br>
+<a href="vme_dma_read.1.html">vme_dma_read</a><br>
+<a href="vme_dma_write.1.html">vme_dma_write</a><br>
+<a href="vme_endian.1.html">vme_endian</a><br>
+<a href="vme_generate_interrupt.1.html">vme_generate_interrupt</a><br>
+<a href="vme_peek.1.html">vme_peek</a><br>
+<a href="vme_poke.1.html">vme_poke</a><br>
+<a href="vme_release_bus.1.html">vme_release_bus</a><br>
+<a href="vme_rmw.1.html">vme_rmw</a><br>
+<a href="vme_slave_peek.1.html">vme_slave_peek</a><br>
+<a href="vme_slave_poke.1.html">vme_slave_poke</a><br>
+<a href="vme_sysreset.1.html">vme_sysreset</a><br>
+<h3><font color="#330099"><a name="_sect2">Utilities as Examples</a></font></h3>
+<p>Full source code for all of the utilities listed above are available in the <font>test</font> directory. The test utilities source code can be used as example code for writing applications using the <font color="#330099"><tt>vme_universe</tt></font> API.  
+</p>
+<h2><a name="doc_chap5"></a>Writing Applications Using the vme_universe Application Program Interface (API)</h2><h3><font color="#330099"><a name="_sect1">Functions</a></font></h3>
+<p>The <font color="#330099"><tt>vme_universe</tt></font> project provides a shared object library for use in applications that access the VMEbus. The following is a list of functions provided by this library:
+</p>
+
+<a href="vme_acquire_bus_ownership.3.html">vme_acquire_bus_ownership</a><br>
+<a href="vme_dma_buffer_create.3.html">vme_dma_buffer_create</a><br>
+<a href="vme_dma_buffer_map.3.html">vme_dma_buffer_map</a><br>
+<a href="vme_dma_buffer_phys_addr.3.html">vme_dma_buffer_phys_addr</a><br>
+<a href="vme_dma_buffer_release.3.html">vme_dma_buffer_release</a><br>
+<a href="vme_dma_buffer_unmap.3.html">vme_dma_buffer_unmap</a><br>
+<a href="vme_dma_read.3.html">vme_dma_read</a><br>
+<a href="vme_dma_write.3.html">vme_dma_write</a><br>
+<a href="vme_get_arbitration_mode.3.html">vme_get_arbitration_mode</a><br>
+<a href="vme_get_arbitration_timeout.3.html">vme_get_arbitration_timeout</a><br>
+<a href="vme_get_bus_ownership.3.html">vme_get_bus_ownership</a><br>
+<a href="vme_get_bus_release_mode.3.html">vme_get_bus_release_mode</a><br>
+<a href="vme_get_bus_request_level.3.html">vme_get_bus_request_level</a><br>
+<a href="vme_get_bus_request_mode.3.html">vme_get_bus_request_mode</a><br>
+<a href="vme_get_bus_timeout.3.html">vme_get_bus_timeout</a><br>
+<a href="vme_get_endian_conversion_bypass.3.html">vme_get_endian_conversion_bypass</a><br>
+<a href="vme_get_master_endian_conversion.3.html">vme_get_master_endian_conversion</a><br>
+<a href="vme_get_max_retry.3.html">vme_get_max_retry</a><br>
+<a href="vme_get_posted_write_count.3.html">vme_get_posted_write_count</a><br>
+<a href="vme_get_slave_endian_conversion.3.html">vme_get_slave_endian_conversion</a><br>
+<a href="vme_init.3.html">vme_init</a><br>
+<a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a><br>
+<a href="vme_interrupt_generate.3.html">vme_interrupt_generate</a><br>
+<a href="vme_interrupt_release.3.html">vme_interrupt_release</a><br>
+<a href="vme_location_monitor_create.3.html">vme_location_monitor_create</a><br>
+<a href="vme_location_monitor_release.3.html">vme_location_monitor_release</a><br>
+<a href="vme_master_window_create.3.html">vme_master_window_create</a><br>
+<a href="vme_master_window_map.3.html">vme_master_window_map</a><br>
+<a href="vme_master_window_phys_addr.3.html">vme_master_window_phys_addr</a><br>
+<a href="vme_master_window_release.3.html">vme_master_window_release</a><br>
+<a href="vme_master_window_translate.3.html">vme_master_window_translate</a><br>
+<a href="vme_master_window_unmap.3.html">vme_master_window_unmap</a><br>
+<a href="vme_read_modify_write.3.html">vme_read_modify_write</a><br>
+<a href="vme_register_image_create.3.html">vme_register_image_create</a><br>
+<a href="vme_register_image_release.3.html">vme_register_image_release</a><br>
+<a href="vme_release_bus_ownership.3.html">vme_release_bus_ownership</a><br>
+<a href="vme_set_arbitration_mode.3.html">vme_set_arbitration_mode</a><br>
+<a href="vme_set_arbitration_timeout.3.html">vme_set_arbitration_timeout</a><br>
+<a href="vme_set_bus_release_mode.3.html">vme_set_bus_release_mode</a><br>
+<a href="vme_set_bus_request_level.3.html">vme_set_bus_request_level</a><br>
+<a href="vme_set_bus_request_mode.3.html">vme_set_bus_request_mode</a><br>
+<a href="vme_set_bus_timeout.3.html">vme_set_bus_timeout</a><br>
+<a href="vme_set_endian_conversion_bypass.3.html">vme_set_endian_conversion_bypass</a><br>
+<a href="vme_set_master_endian_conversion.3.html">vme_set_master_endian_conversion</a><br>
+<a href="vme_set_max_retry.3.html">vme_set_max_retry</a><br>
+<a href="vme_set_posted_write_count.3.html">vme_set_posted_write_count</a><br>
+<a href="vme_set_slave_endian_conversion.3.html">vme_set_slave_endian_conversion</a><br>
+<a href="vme_slave_window_create.3.html">vme_slave_window_create</a><br>
+<a href="vme_slave_window_map.3.html">vme_slave_window_map</a><br>
+<a href="vme_slave_window_phys_addr.3.html">vme_slave_window_phys_addr</a><br>
+<a href="vme_slave_window_release.3.html">vme_slave_window_release</a><br>
+<a href="vme_slave_window_unmap.3.html">vme_slave_window_unmap</a><br>
+<a href="vme_sysreset.3.html">vme_sysreset</a><br>
+<a href="vme_term.3.html">vme_term</a><br>
+<h3><font color="#330099"><a name="_sect2">Compiling and Linking the Application</a></font></h3>
+<p>To use the API functions listed above, your code must include the header files <font>vme/vme.h</font> and <font>vme/vme_api.h</font>. The application must also be linked with the <font>libvme.so</font> library by including the switch <font color="#330099"><tt>-lvme</tt></font> to the compile command. The next code listing is a small example application that initializes the VMEbus interface.
+</p>
+<a name="doc_pre3"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 3: A Simple VMEbus Application</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// Here is a simple piece of code to try compiling and running.</font>
+<font color="#ff0000">// We'll call it hello_vme.c</font>
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;stdio.h&gt;
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Cannot initialize the VMEbus");
+		return -1;
+	}
+
+	printf("We're ready to start accessing the bus now!\n");
+
+	vme_term(bus_handle);
+	return 0;
+}
+
+
+<font color="#ff0000">// To compile the application run:</font>
+<font color="#330099"><b>sh$ </b>gcc hello_vme.c -o hello_vme -lvme</font>
+<font color="#ff0000">// If you have not already done so, load the driver.</font>
+<font color="#330099"><b>sh# </b>modprobe vme_universe</font>
+<font color="#ff0000">// Now let's run our code.</font>
+<font color="#330099"><b>sh$ </b>./hello_vme</font>
+<font color="#330099">We're ready to start accessing the bus now!</font>
+</pre></td></tr></table>
+<h2><a name="doc_chap6"></a>Master Windows</h2>
+<p>Master Windows enable access to other boards across the VMEbus.
+</p>
+<h3><font color="#330099"><a name="_sect1">Functions</a></font></h3>
+<p>The following functions are used when accessing the VMEbus using Master Windows:
+</p>
+<a href="vme_master_window_create.3.html">vme_master_window_create</a><br>
+<a href="vme_master_window_map.3.html">vme_master_window_map</a><br>
+<a href="vme_master_window_phys_addr.3.html">vme_master_window_phys_addr</a><br>
+<a href="vme_master_window_release.3.html">vme_master_window_release</a><br>
+<a href="vme_master_window_translate.3.html">vme_master_window_translate</a><br>
+<a href="vme_master_window_unmap.3.html">vme_master_window_unmap</a><br>
+<a href="vme_read_modify_write.3.html">vme_read_modify_write</a><br>
+
+<h3><font color="#330099"><a name="_sect2">Examples</a></font></h3>
+<p>The next example uses the Master Window API functions to read data from the VMEbus.
+</p>
+<a name="doc_pre4"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 4: peek.c</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// I wrote this example to access a VMIVME-5588DMA reflected memory board addressed</font>
+<font color="#ff0000">// at VMEbus address 0x08000000 in A32 space.</font>
+<font color="#ff0000">// You should change VME_ADDRESS, ADDRESS_MODIFIER, and NBYTES to access a board</font>
+<font color="#ff0000">// installed in your chassis</font>
+
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;stdio.h&gt;
+
+#define VME_ADDRESS       0x08000000
+#define ADDRESS_MODIFIER  VME_A32SD
+#define NBYTES            0x40
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+	vme_master_handle_t window_handle;
+	uint8_t *ptr;
+	int ii;
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Error initializing the VMEbus");
+		return -1;
+	}
+
+	if (vme_master_window_create(bus_handle, &amp;window_handle,
+				     VME_ADDRESS, ADDRESS_MODIFIER, NBYTES,
+				     VME_CTL_PWEN, NULL)) {
+		perror("Error creating the window");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	ptr = vme_master_window_map(bus_handle, window_handle, 0);
+	if (!ptr) {
+		perror("Error mapping the window");
+		vme_master_window_release(bus_handle, window_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	/* Print the VMEbus data */
+	for (ii = 0; ii &lt; NBYTES; ++ii, ++ptr) {
+		printf("%.2x ", *ptr);
+		/* Add a newline every 16 bytes */
+		if (!((ii + 1) % 0x10))
+			printf("\n");
+	}
+	printf("\n");
+
+	if (vme_master_window_unmap(bus_handle, window_handle)) {
+		perror("Error unmapping the window");
+		vme_master_window_release(bus_handle, window_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_master_window_release(bus_handle, window_handle)) {
+		perror("Error releasing the window");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_term(bus_handle)) {
+		perror("Error terminating");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+
+<font color="#ff0000">// To compile the application run:</font>
+<font color="#330099"><b>sh$ </b>gcc peek.c -o peek -lvme</font>
+<font color="#ff0000">// And run it</font>
+<font color="#330099"><b>sh$ </b>./peek</font>
+<font color="#330099">ff 4b 70 ff 01 e0 ff 00 ff ff ff ff ff ff ff ff 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 ff ff 00 00 ff ff 00 00 ff ff 00 00 
+ff ff ff 0f ff ff ff 0f ff ff ff 0f ff ff ff 0f</font>
+</pre></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#bbffbb"><p><b>Note: </b>For performance reasons, using the flag <font color="#330099">VME_CTL_PWEN</font> to <a href="vme_master_window_create.3.html">vme_master_window_create</a> is recommended. This flag turns on write posting.
+</p></td></tr></table>
+<p><a href="vme_master_window_create.3.html">vme_master_window_create</a> creates a VMEbus window that enables access to the VMEbus address, VME_ADDRESS, in the address space determined by ADDRESS_MODIFIER. The window is at least NBYTES large. Note that <a href="vme_master_window_map.3.html">vme_master_window_map</a> returns a pointer. To read data from the VMEbus, dereference the returned pointer as seen in the code <font color="#330099">printf("%.2x ", *ptr);</font>. 
+</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#bbffbb"><p><b>Note: </b>If <font color="#330099"><tt>peek</tt></font> prints all FF's, this may indicate a bus error. Bus errors occur when no board on the VMEbus answers the access at the provided address and address modifier. If this occurs, ensure the addressing of your target board and the VME_ADDRESS and ADDRESS_MODIFIER are correct. See <a href="#doc_chap13">Debugging tips</a> to learn more about how to debug bus errors.
+</p></td></tr></table>
+<p>Here is an example of how to turn the front panel LED on and off on the VMIVME-5588DMA board. If you have a board in your chassis that has an LED, modify the addresses and offsets to turn the LED on and off on your board.
+</p>
+<font color="#ff0000">Turning an LED on and off is the embedded systems equivalent of "hello world".</font>
+<a name="doc_pre5"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 5: toggle_led.c</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;stdio.h&gt;
+
+#define VME_ADDRESS       0x08000000
+#define ADDRESS_MODIFIER  VME_A32SD
+#define NBYTES            0x40
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+	vme_master_handle_t window_handle;
+	uint8_t *ptr;
+	uint8_t *csr;		/* The CSR register controls the LED */
+	const int offset = 0x5;	/* The CSR register is offset 5 bytes from
+				   VME_ADDRESS */
+	const int bit = 7;	/* Bit 7 controls the LED */
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Error initializing the VMEbus");
+		return -1;
+	}
+
+	if (vme_master_window_create(bus_handle, &amp;window_handle,
+				     VME_ADDRESS, ADDRESS_MODIFIER, NBYTES,
+				     VME_CTL_PWEN, NULL)) {
+		perror("Error creating the window");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	ptr = vme_master_window_map(bus_handle, window_handle, 0);
+	if (!ptr) {
+		perror("Error mapping the window");
+		vme_master_window_release(bus_handle, window_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	/* Toggle the LED */
+	csr = ptr + offset;
+	if (*csr &amp; (1 &lt;&lt; bit)) {
+		*csr &amp;= ~(1 &lt;&lt; bit);
+		printf("The LED should now be off\n");
+	} else {
+		*csr |= (1 &lt;&lt; bit);
+		printf("The LED should now be on\n");
+	}
+
+	if (vme_master_window_unmap(bus_handle, window_handle)) {
+		perror("Error unmapping the window");
+		vme_master_window_release(bus_handle, window_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_master_window_release(bus_handle, window_handle)) {
+		perror("Error releasing the window");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_term(bus_handle)) {
+		perror("Error terminating");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+<font color="#ff0000">// To compile the application run:</font>
+<font color="#330099"><b>sh$ </b>gcc toggle_led.c -o toggle_led -lvme</font>
+</pre></td></tr></table>
+<p><font color="#330099"><tt>toggle_led</tt></font> reads the current state of the LED by dereferencing the <font color="#330099">csr</font> pointer and, depending on the current state, writes either 1 or 0 to the register LED bit to turn the LED on or off. The lines <font color="#330099">*csr &amp;= ~(1 &lt;&lt; bit);</font> and <font color="#330099">*csr |= (1 &lt;&lt; bit);</font> actually make two accesses to the VMEbus, a read cycle and a write cycle. (This is more apparent if you read <font color="#330099">*csr |= (1 &lt;&lt; bit);</font> as <font color="#330099">*csr = *csr | (1 &lt;&lt; bit);</font>).
+</p>
+<p>See the <a href="vme_peek.1.html">vme_peek</a> and <a href="vme_poke.1.html">vme_poke</a> source code for more examples of writing an application that accesses the VMEbus using the Master Window interface.
+</p>
+
+
+<h3><font color="#330099"><a name="_sect3">Advanced Functions</a></font></h3>
+<p>The Tundra Universe VMEbus-PCI bridge chip Master Window interface works by creating a one-to-one mapping of PCI bus address space to VMEbus address space. Sometimes it is useful to know which PCI address is used to access a VMEbus window. The <a href="vme_master_window_phys_addr.3.html">vme_master_window_phys_addr</a> function returns the base PCI address of a window.
+</p>
+<p>Because the amount of available PCI address space is limited (4GB on a 32-bit machine, some of which is taken up by physical RAM, peripheral devices, etc.) it is possible you will need access to more VMEbus memory than can be mapped to the PCI bus at one time. A possible workaround is to create a window, access it, and then release the window so PCI address space is available to create a new window shifted to the next range of addresses. Although this solution works, it incurs a lot of overhead. The <a href="vme_master_window_translate.3.html">vme_master_window_translate</a> function is the recommended workaround to this issue. <a href="vme_master_window_translate.3.html">vme_master_window_translate</a> shifts the one-to-one mapping of PCI space to VMEbus space by reusing the range of PCI address space already assigned to a window to access a different range of VMEbus addresses.
+</p>
+<p>VMEbus read-modify-write cycles can be generated using the <a href="vme_read_modify_write.3.html">vme_read_modify_write</a> function. For an example on the use of this function, refer to the source code for the <a href="vme_rmw.1.html">vme_rmw</a> utility.
+</p>
+
+<h2><a name="doc_chap7"></a>Slave Windows</h2>
+<p>Slave Windows can be thought of as shared memory on the VMEbus. A Slave Window is used to expose a specific region of the PCI bus address space to the VMEbus. Most often this is done to expose a portion of the local RAM to the VMEbus so that it can be accessed by other boards in your VME chassis, but any device with a PCI bus address can be exposed to the VMEbus.</p>
+<p></p>
+<p>The <a href="vme_slave_window_create.3.html">vme_slave_window_create</a> function opens a Slave Window to the VMEbus. If the physical address is not specified, this function attempts to allocate RAM to share with the VMEbus at the specified VMEbus address. If a physical address is specified, that PCI address is mapped to the specified VMEbus address.
+</p>
+<h3><font color="#330099"><a name="_sect1">Functions</a></font></h3>
+<p>The following functions are used when accessing VMEbus Slave Windows:
+</p>
+<a href="vme_slave_window_create.3.html">vme_slave_window_create</a><br>
+<a href="vme_slave_window_map.3.html">vme_slave_window_map</a><br>
+<a href="vme_slave_window_phys_addr.3.html">vme_slave_window_phys_addr</a><br>
+<a href="vme_slave_window_release.3.html">vme_slave_window_release</a><br>
+<a href="vme_slave_window_unmap.3.html">vme_slave_window_unmap</a><br>
+
+
+<h3><font color="#330099"><a name="_sect2">Examples</a></font></h3>
+<p>Here is an example demonstrating how to create and access a VMEbus Slave Window:
+</p>
+<a name="doc_pre6"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 6: slave_peek.c</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;stdio.h&gt;
+
+#define VME_ADDRESS       0x00040000
+#define ADDRESS_SPACE     VME_A24
+#define NBYTES            0x10
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+	vme_slave_handle_t window_handle;
+	uint8_t *ptr;
+	int ii;
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Error initializing the VMEbus");
+		return -1;
+	}
+
+	if (vme_slave_window_create(bus_handle, &amp;window_handle,
+				    VME_ADDRESS, ADDRESS_SPACE, NBYTES,
+				    VME_CTL_PWEN | VME_CTL_PREN, NULL)) {
+		perror("Error creating the window");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	ptr = vme_slave_window_map(bus_handle, window_handle, 0);
+	if (!ptr) {
+		perror("Error mapping the window");
+		vme_slave_window_release(bus_handle, window_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	/* Print the data */
+	for (ii = 0; ii &lt; NBYTES; ++ii, ++ptr) {
+		printf("%.2x ", *ptr);
+		/* Add a newline every 16 bytes */
+		if (!((ii + 1) % 0x10))
+			printf("\n");
+	}
+	printf("\n");
+
+	if (vme_slave_window_unmap(bus_handle, window_handle)) {
+		perror("Error unmapping the window");
+		vme_slave_window_release(bus_handle, window_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_slave_window_release(bus_handle, window_handle)) {
+		perror("Error releasing the window");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_term(bus_handle)) {
+		perror("Error terminating");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+<font color="#ff0000">// To compile the application run:</font>
+<font color="#330099"><b>sh$ </b>gcc slave_peek.c -o slave_peek -lvme </font>
+<font color="#ff0000">// And run it</font>
+<font color="#330099"><b>sh$ </b>./slave_peek</font>
+<font color="#330099">00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</font>
+</pre></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#bbffbb"><p><b>Note: </b>For performance reasons, it is recommended that you use the <font color="#330099">VME_CTL_PWEN</font> and <font color="#330099">VME_CTL_PREN</font> flags to <a href="vme_slave_window_create.3.html">vme_slave_window_create</a>. These flags turn on write posting and read prefetch respectively.
+</p></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffbbbb"><p><b>Warning: </b>When <font color="#330099">NULL</font> is specified for the <font color="#330099">phys_addr</font> parameter of <a href="vme_slave_window_create.3.html">vme_slave_window_create</a> the driver attempts to allocate contiguous physical memory. The amount of physically contiguous RAM available for allocation is limited, and will vary depending on the specific system. Since the amount depends on the specific system, a request for large amounts of RAM using <a href="vme_slave_window_create.3.html">vme_slave_window_create</a> will sometimes fail.
+</p></td></tr></table>
+<p>To guarantee that memory will be available for the Slave Window, <a href="#doc_chap12">reserve memory at boot time</a> and pass the address of the physical memory as the <font color="#330099">phys_addr</font> parameter of <a href="vme_slave_window_create.3.html">vme_slave_window_create</a>. The next code listing illustrates this concept:
+</p>
+<a name="doc_pre7"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 7: Using RAM Reserved at Boot Time for a Slave Window</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// Assume that we have reserved the top 2MB of memory on a 64MB machine.</font>
+<font color="#ff0000">// The base address of our reserved memory begins at 0x3e00000 so here is the</font>
+<font color="#ff0000">// call we would make to use that memory as slave ram.</font>
+
+#define MB  1024 * 1024
+	if(vme_slave_window_create(bus_handle, &amp;window_handle,
+	                           VME_ADDRESS, ADDRESS_SPACE, 2 * MB,
+	                           VME_CTL_PWEN | VME_CTL_PREN, 62 * MB)) {
+		perror("Error creating the window");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+</pre></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffbbbb"><p><b>Warning: </b>In older kernel versions, specifying mem=62M ensured that the base address of the reserved memory would be located at memory address 0x3e00000 (1024 * 1024 * 62). This cannot be assumed with newer kernel versions. See <font>/proc/iomem</font> to determine where the top of the kernel's physical RAM is located.
+</p></td></tr></table>
+<p>See the <a href="vme_slave_peek.1.html">vme_slave_peek</a> and <a href="vme_slave_poke.1.html">vme_slave_poke</a> source code for more examples of how to write applications that use the Slave Window interface.
+</p>
+
+<h2><a name="doc_chap8"></a>Direct Memory Access (DMA)</h2>
+<p>The Tundra Universe II chip can initiate DMA transfers to access the VMEbus.
+</p>
+<h3><font color="#330099"><a name="_sect1">Functions</a></font></h3>
+<p>The following functions are used when accessing the VMEbus using the DMA engine:
+</p>
+<a href="vme_dma_buffer_create.3.html">vme_dma_buffer_create</a><br>
+<a href="vme_dma_buffer_map.3.html">vme_dma_buffer_map</a><br>
+<a href="vme_dma_buffer_phys_addr.3.html">vme_dma_buffer_phys_addr</a><br>
+<a href="vme_dma_buffer_release.3.html">vme_dma_buffer_release</a><br>
+<a href="vme_dma_buffer_unmap.3.html">vme_dma_buffer_unmap</a><br>
+<a href="vme_dma_read.3.html">vme_dma_read</a><br>
+<a href="vme_dma_write.3.html">vme_dma_write</a><br>
+<h3><font color="#330099"><a name="_sect2">Examples</a></font></h3>
+<p>In this example, the peek.c program has been modified to transfer data using DMA:
+</p>
+<a name="doc_pre8"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 8: dma_peek.c</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;stdio.h&gt;
+
+#define VME_ADDRESS       0x08000000
+#define ADDRESS_MODIFIER  VME_A32SD
+#define NBYTES            0x40
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+	vme_dma_handle_t dma_handle;
+	uint8_t *ptr;
+	int ii;
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Error initializing the VMEbus");
+		return -1;
+	}
+
+	if (vme_dma_buffer_create(bus_handle, &amp;dma_handle, NBYTES, 0, NULL)) {
+		perror("Error creating the buffer");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	ptr = vme_dma_buffer_map(bus_handle, dma_handle, 0);
+	if (!ptr) {
+		perror("Error mapping the buffer");
+		vme_dma_buffer_release(bus_handle, dma_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	/* Transfer the data */
+	if (vme_dma_read(bus_handle, dma_handle, 0, VME_ADDRESS,
+			 ADDRESS_MODIFIER, NBYTES, 0)) {
+		perror("Error reading data");
+		vme_dma_buffer_unmap(bus_handle, dma_handle);
+		vme_dma_buffer_release(bus_handle, dma_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	/* Print the VMEbus data */
+	for (ii = 0; ii &lt; NBYTES; ++ii, ++ptr) {
+		printf("%.2x ", *ptr);
+		/* Add a newline every 16 bytes */
+		if (!((ii + 1) % 0x10))
+			printf("\n");
+	}
+	printf("\n");
+
+	if (vme_dma_buffer_unmap(bus_handle, dma_handle)) {
+		perror("Error unmapping the buffer");
+		vme_dma_buffer_release(bus_handle, dma_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_dma_buffer_release(bus_handle, dma_handle)) {
+		perror("Error releasing the buffer");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_term(bus_handle)) {
+		perror("Error terminating");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+<font color="#ff0000">// To compile the application run:</font>
+<font color="#330099"><b>sh$ </b>gcc dma_peek.c -o dma_peek -lvme </font>
+<font color="#ff0000">// And run it</font>
+<font color="#330099"><b>sh$ </b>./dma_peek</font>
+<font color="#330099">ff 70 4b ff 00 ff e0 01 ff ff ff ff ff ff ff ff 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 ff ff ff 00 ff ff ff 00 ff ff ff 
+0f ff ff ff 0f ff ff ff 0f ff ff ff 0f ff ff ff</font>
+
+<font color="#ff0000">// But wait! There seems to be some sort of byte swapping issue.</font>
+<font color="#ff0000">// Notice that the output of our peek program was:</font>
+<font color="#330099">ff 4b 70 ff 01 e0 ff 00 ff ff ff ff ff ff ff ff
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 ff ff 00 00 ff ff 00 00 ff ff 00 00
+ff ff ff 0f ff ff ff 0f ff ff ff 0f ff ff ff 0f</font>
+</pre></td></tr></table>
+<p>The <font color="#330099"><tt>peek</tt></font> function dereferenced the pointer and transferred data across the VMEbus one byte at a time. The <font color="#330099"><tt>dma_peek</tt></font> application printed the data from the local memory buffer one byte at a time by dereferencing a pointer, however, the data was transferred across the VMEbus 32 bits at a time because the default data width for <a href="vme_dma_read.3.html">vme_dma_read</a> with address modifier <font color="#330099">VME_A32SD</font> is 32 bits. This inconsistancy in data widths is what caused the byte-swapping issue. To correct the problem, use a data width flag in the <a href="vme_dma_read.3.html">vme_dma_read</a> function call as illustrated in the next code listing.
+<a name="doc_pre9"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 9: Specifying the Data Width to vme_dma_read</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// So change the vme_dma_read command to</font>
+
+	if(vme_dma_read(bus_handle, dma_handle, 0, VME_ADDRESS,
+       	                ADDRESS_MODIFIER, NBYTES, VME_DMA_DW_8))
+
+<font color="#330099"><b>sh$ </b>gcc dma_peek.c -o dma_peek -lvme </font>
+<font color="#330099"><b>sh$ </b>./dma_peek</font>
+<font color="#330099">ff 4b 70 ff 01 e0 ff 00 ff ff ff ff ff ff ff ff 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00 ff ff 00 00 ff ff 00 00 ff ff 00 00 
+ff ff ff 0f ff ff ff 0f ff ff ff 0f ff ff ff 0f</font>
+
+<font color="#ff0000">// Thats more like it!</font>
+</pre></td></tr></table>
+</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#bbffbb"><p><b>Note: </b>Not all data widths are available for all address modifiers. For example, the data width flag <font color="#330099">VME_DMA_DW_64</font> cannot be used with address modifier <font color="#330099">VME_A32SD</font>, because the Tundra Universe II chip forces multiplex block transfers any time the data switch is set to 64-bits. Conversely, if the address modifier is <font color="#330099">VME_A32MBLT</font>, the data width must be 64-bit. 8-bit data width transfers are not available for block transfer address modifiers.
+</p></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffbbbb"><p><b>Warning: </b>When <font color="#330099">NULL</font> is specified for the <font color="#330099">phys_addr</font> parameter of <a href="vme_dma_buffer_create.3.html">vme_dma_buffer_create</a> the driver attempts to allocate contiguous physical memory. The amount of physically contiguous RAM available for allocation is limited, and will vary depending on the specific system. Since the amount depends on the specific system, a request for large amounts of RAM using <a href="vme_dma_buffer_create.3.html">vme_dma_buffer_create</a> will sometimes fail.
+</p></td></tr></table>
+<p>To guarantee that memory will be available for the DMA buffer, <a href="#doc_chap12">reserve memory at boot time</a> and pass the address of the physical memory as the <font color="#330099">phys_addr</font> parameter of <a href="vme_dma_buffer_create.3.html">vme_dma_buffer_create</a>. Here is an example using this concept:
+</p>
+<a name="doc_pre10"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 10: Using RAM Reserved at Boot Time for a DMA Buffer</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// Assume that we have reserved the top 2MB of memory on a 64MB machine.</font>
+<font color="#ff0000">// The base address of our reserved memory begins at 0x3e00000 so here is the</font>
+<font color="#ff0000">// call we would make to use that memory as a dma buffer.</font>
+
+#define MB  1024 * 1024
+	if(vme_dma_buffer_create(bus_handle, &amp;dma_handle, 2 * MB, 0,
+       	                         62 * MB)) {
+		perror("Error creating the buffer");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+</pre></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffbbbb"><p><b>Warning: </b>In older kernel versions, specifying mem=62M ensured that the base address of the reserved memory would be located at memory address 0x3e00000 (1024 * 1024 * 62). This cannot be assumed with newer kernel versions. See <font>/proc/iomem</font> to determine where the top of the kernel's physical RAM is located.
+</p></td></tr></table>
+<p>See the <a href="vme_dma_read.1.html">vme_dma_read</a> and <a href="vme_dma_write.1.html">vme_dma_write</a> source code for more examples of how to write applications that use VMEbus DMA.
+</p>
+<h2><a name="doc_chap9"></a>Interrupts</h2>
+<p>The <font color="#330099"><tt>vme_universe</tt></font> project enables the generation of interrupts on the VMEbus, as well as notification of when VMEbus interrupts and other events relating to the VMEbus occur.
+</p>
+<h3><font color="#330099"><a name="_sect1">Functions</a></font></h3>
+<p>The following functions are used to handle VMEbus interrupts:
+</p>
+<a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a><br>
+<a href="vme_interrupt_generate.3.html">vme_interrupt_generate</a><br>
+<a href="vme_interrupt_release.3.html">vme_interrupt_release</a><br>
+<h3><font color="#330099"><a name="_sect2">VMEbus Interrupts</a></font></h3>
+<p>There are two methods for being notified when an interrupt occurs:
+</p>
+<p>The first method is to make a function call, <a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a>, that blocks until the interrupt occurs. Here is an example using the <a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a> function call to wait for an interrupt:
+</p>
+<a name="doc_pre11"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 11: get_interrupt.c (Method 1)</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;stdio.h&gt;
+
+#define LEVEL             VME_INTERRUPT_VIRQ3
+#define VECTOR            0x10
+
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+	vme_interrupt_handle_t interrupt_handle;
+	int data;
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Error initializing the VMEbus");
+		return -1;
+	}
+
+	if (vme_interrupt_attach(bus_handle, &amp;interrupt_handle, LEVEL,
+				 VECTOR, VME_INTERRUPT_BLOCKING, &amp;data)) {
+		perror("Error attaching to the interrupt");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	/* For VMEbus interrupts, the returned data is (level &lt;&lt; 8) &amp; vector */
+	printf("VMEbus interrupt occured on level %d, vector 0x%x\n",
+	       data &gt;&gt; 8, data &amp; 0xff);
+
+	if (vme_term(bus_handle)) {
+		perror("Error terminating");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+<font color="#ff0000">// To compile the application run:</font>
+<font color="#330099"><b>sh$ </b>gcc get_interrupt.c -o get_interrupt -lvme </font>
+<font color="#ff0000">// And run it</font>
+<font color="#330099"><b>sh$ </b>./get_interrupt</font>
+<font color="#330099">VMEbus interrupt occured on level 3, vector 0x10</font>
+</pre></td></tr></table>
+<p>The <a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a> function call returns an integer data parameter containing the level and vector of the interrupt.
+</p>
+<p>The second interrupt notification method uses Posix real-time signals. In this example we request that the driver send a signal to the process in response to the interrupt.
+</p>
+<a name="doc_pre12"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 12: get_interrupt.c (Method 2)</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;stdio.h&gt;
+
+#define LEVEL             VME_INTERRUPT_VIRQ3
+#define VECTOR            0x10
+
+int done = 0;
+
+
+void handler(int sig, siginfo_t * siginfo, void *extra)
+{
+	/* For VMEbus interrupts, the returned data is (level &lt;&lt; 8) &amp; vector */
+	printf("VMEbus interrupt occured on level %d, vector 0x%x\n",
+	       siginfo-&gt;si_value.sival_int &gt;&gt; 8,
+	       siginfo-&gt;si_value.sival_int &amp; 0xff);
+
+	done = 1;
+}
+
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+	vme_interrupt_handle_t interrupt_handle;
+	struct sigevent event;
+	struct sigaction action;
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Error initializing the VMEbus");
+		return -1;
+	}
+
+	/* Set up sigevent struct */
+	event.sigev_signo = SIGIO;
+	event.sigev_notify = SIGEV_SIGNAL;
+	event.sigev_value.sival_int = 0;
+
+	/* Install the signal handler */
+	sigemptyset(&amp;action.sa_mask);
+	action.sa_sigaction = handler;
+	action.sa_flags = SA_SIGINFO;
+
+	if (sigaction(SIGIO, &amp;action, NULL)) {
+		perror("Error installing signal handler");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_interrupt_attach(bus_handle, &amp;interrupt_handle, LEVEL,
+				 VECTOR, VME_INTERRUPT_SIGEVENT, &amp;event)) {
+		perror("Error attaching to the interrupt");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	/* Loop here until we get the signal */
+	while (!done) ;
+
+	if (vme_interrupt_release(bus_handle, interrupt_handle)) {
+		perror("Error releasing the interrupt");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_term(bus_handle)) {
+		perror("Error terminating");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+<font color="#ff0000">// To compile the application run:</font>
+<font color="#330099"><b>sh$ </b>gcc get_interrupt.c -o get_interrupt -lvme </font>
+<font color="#ff0000">// And run it</font>
+<font color="#330099"><b>sh$ </b>./get_interrupt</font>
+<font color="#330099">VMEbus interrupt occured on level 3, vector 0x10</font>
+</pre></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffffbb"><p><b>Important: </b>Note that this method of using <font color="#330099">get_interrupt.c</font> makes a call to <a href="vme_interrupt_release.3.html">vme_interrupt_release</a>, while the first method did not make this call.
+</p></td></tr></table>
+<h3><font color="#330099"><a name="_sect3">Mailbox Interrupts</a></font></h3>
+<p>Mailbox interrupts are handled similarly to the way VMEbus interrupts are handled. Here is an example using mailbox interrupts:
+</p>
+<a name="doc_pre13"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 13: get_mailbox.c</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;stdio.h&gt;
+
+
+#define LEVEL             VME_INTERRUPT_MBOX3
+#define VME_ADDRESS       0x0
+#define ADDRESS_SPACE     VME_A16
+
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+	vme_vrai_handle_t vrai_handle;
+	vme_interrupt_handle_t interrupt_handle;
+	int data;
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Error initializing the VMEbus");
+		return -1;
+	}
+	if (vme_register_image_create(bus_handle, &amp;vrai_handle, VME_ADDRESS,
+					  ADDRESS_SPACE, 0)) {
+		perror("Error creating VMEbus register image");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_interrupt_attach(bus_handle, &amp;interrupt_handle, LEVEL,
+				     0, VME_INTERRUPT_BLOCKING, &amp;data)) {
+		perror("Error attaching to the interrupt");
+		vme_register_image_release(bus_handle, vrai_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	printf("Mailbox interrupt occurred, data is 0x%x\n", data);
+
+	if (vme_register_image_release(bus_handle, vrai_handle)) {
+		perror("Error releasing VMEbus register image");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_term(bus_handle)) {
+		perror("Error terminating");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+</pre></td></tr></table>
+<p>To trigger mailbox interrupts, the register space of the Tundra Universe II chip must be exposed to the VMEbus. The <a href="vme_register_image_create.3.html">vme_register_image_create</a> function call exposes the Tundra Universe II's registers to the VMEbus at address 0x0 in A16 space.
+</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffbbbb"><p><b>Warning: </b>Use a different address if a board is already mapped to address 0x0 in A16 space.
+</p></td></tr></table>
+<p>To trigger the mailbox interrupt, a value must be written to the Tundra Universe II's mailbox register. There are four mailboxes [0-3] with address offsets of 0x348, 0x34C, 0x350 and 0x354, respectively. Since we are using mailbox 3 (0x354) in <font color="#330099"><tt>get_mailbox</tt></font>, we must use address offset 0x354 to trigger the interrupt. To do this, we will use another GE Fanuc single board computer in the same chassis and write to the register using the <a href="vme_poke.1.html">vme_poke</a> utility.
+</p>
+<a name="doc_pre14"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 14: Triggering the Mailbox Interrupt</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// First let's verify that we can access the Tundra device.</font>
+<font color="#330099"><b>sh$ </b>vme_peek -aVME_A16S -A0x0 -dVME_D16</font>
+<font color="#330099">10e3</font>  <font color="#ff0000">// 10e3 is Tundra's vendor id</font>
+<font color="#ff0000">// Now write to the mailbox register to trigger the interrupt.</font>
+<font color="#330099"><b>sh$ </b>vme_poke -aVME_A16S -A0x354 a5</font>
+</pre></td></tr></table>
+<p>This should cause the <font color="#330099"><tt>get_mailbox</tt></font> application to receive an interrupt.
+</p>
+<h3><font color="#330099"><a name="_sect4">Location Monitor Interrupts</a></font></h3>
+<p>Location monitor interrupts are handled in the same way as VMEbus interrupts. Here is an example that illustrates handling Location Monitor interrupts:
+</p>
+<a name="doc_pre15"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 15: get_lm.c</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;stdio.h&gt;
+
+
+#define LEVEL             VME_INTERRUPT_LM2
+#define VME_ADDRESS       0x08000000
+#define ADDRESS_SPACE     VME_A32
+
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+	vme_lm_handle_t lm_handle;
+	vme_interrupt_handle_t interrupt_handle;
+	int data;
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Error initializing the VMEbus");
+		return -1;
+	}
+	if (vme_location_monitor_create(bus_handle, &amp;lm_handle, VME_ADDRESS,
+					ADDRESS_SPACE, 0, 0)) {
+		perror("Error creating VMEbus location monitor image");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_interrupt_attach(bus_handle, &amp;interrupt_handle, LEVEL, 0,
+				 VME_INTERRUPT_BLOCKING, &amp;data)) {
+		perror("Error attaching to the interrupt");
+		vme_location_monitor_release(bus_handle, lm_handle);
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	printf("Location monitor interrupt\n");
+
+	if (vme_location_monitor_release(bus_handle, lm_handle)) {
+		perror("Error releasing VMEbus location monitor image");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_term(bus_handle)) {
+		perror("Error terminating");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+<font color="#ff0000">// To compile the application run:</font>
+<font color="#330099"><b>sh$ </b>gcc get_lm.c -o get_lm -lvme</font>
+<font color="#ff0000">// And run it as a background task</font>
+<font color="#330099"><b>sh$ </b>./get_lm &amp;</font>
+<font color="#ff0000">// Now access the location monitor window to cause an interrupt</font>
+<font color="#330099"><b>sh$ </b>vme_peek -aVME_A32SD -A0x08000010</font>
+<font color="#330099">Location monitor interrupt</font>
+<font color="#330099">00</font>
+</pre></td></tr></table>
+<p>The location monitor image area covers 0x1000 bytes, starting at the base address supplied to the <a href="vme_location_monitor_create.3.html">vme_location_monitor_create</a> function call. Address bits 3 and 4 determine which of the four location monitor interrupts of VME_INTERRUPT_LM[0-3] are triggered.
+</p>
+<p>Here is another Location Monitor interrupt example using the <a href="vme_catch_interrupt.1.html">vme_catch_interrupt</a> utility to demonstrate the mapping of location monitor interrupts. For this example we will use the <font color="#330099">location_monitor</font> <a href="#doc_chap10">module parameter</a> to create the location monitor image. <a href="#doc_chap10">Module parameters</a> are discussed in greater detail later in this document.
+</p>
+<a name="doc_pre16"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 16: Location Monitors</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// If the module is already loaded, then we will need to unload it</font>
+<font color="#330099"><b>sh# </b>modprobe -r vme_universe</font>
+<font color="#ff0000">// Load the module with the location_monitor parameter specifying a location</font>
+<font color="#ff0000">// monitor image at address 0x08000000 in A32 space.</font>
+<font color="#330099"><b>sh# </b>modprobe vme_universe location_monitor=0x80F20000,0x08000000</font>
+<font color="#ff0000">// Verify that we created the location monitor image by looking at the proc page.</font>
+<font color="#330099"><b>sh$ </b>cat /proc/vme/ctl</font>
+<font color="#330099">
+comm=0x847
+
+master control=0x80d00000
+
+miscellaneous control=0x35060000
+
+location monitor:
+  control=0x80f20000
+  base=0x8000000
+</font>
+<font color="#ff0000">// Yep, our location monitor image is there</font>
+<font color="#ff0000">// Now we'll start handlers for all of the location monitor interrupts</font>
+<font color="#330099"><b>sh$ </b>vme_catch_interrupt -lVME_INTERRUPT_LM0 -fVME_INTERRUPT_SIGEVENT &amp;</font>
+<font color="#330099"><b>sh$ </b>vme_catch_interrupt -lVME_INTERRUPT_LM1 -fVME_INTERRUPT_SIGEVENT &amp;</font>
+<font color="#330099"><b>sh$ </b>vme_catch_interrupt -lVME_INTERRUPT_LM2 -fVME_INTERRUPT_SIGEVENT &amp;</font>
+<font color="#330099"><b>sh$ </b>vme_catch_interrupt -lVME_INTERRUPT_LM3 -fVME_INTERRUPT_SIGEVENT &amp;</font>
+<font color="#ff0000">// Now we'll trigger the location monitor interrupts in order.</font>
+<font color="#330099"><b>sh$ </b>vme_peek -aVME_A32SD -A0x08000000</font>
+<font color="#330099">00</font>
+<font color="#330099">Location monitor interrupt level 0</font>
+<font color="#330099"><b>sh$ </b>vme_peek -aVME_A32SD -A0x08000008</font>
+<font color="#330099">00</font>
+<font color="#330099">Location monitor interrupt level 1</font>
+<font color="#330099"><b>sh$ </b>vme_peek -aVME_A32SD -A0x08000010</font>
+<font color="#330099">00</font>
+<font color="#330099">Location monitor interrupt level 2</font>
+<font color="#330099"><b>sh$ </b>vme_peek -aVME_A32SD -A0x08000018</font>
+<font color="#330099">00</font>
+<font color="#330099">Location monitor interrupt level 3</font>
+</pre></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffbbbb"><p><b>Warning: </b>Even though there is a VMIVME-5588DMA card at location A32SD 0x08000000 in the example shown, the output was always <font color="#330099">00</font> because the Tundra Universe II chip generates DTACK and terminates the bus cycle when an attempt is made to access the addresses of its own location monitor image. This results in the Location Monitor image masking its VMEbus address range from the user.
+</p></td></tr></table>
+<h3><font color="#330099"><a name="_sect5">Bus Error Interrupts</a></font></h3>
+<p>Bus error interrupts are handled similarly to all other interrupts. The data parameter of <a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a> returns the address of the bus error for blocking calls and, for signals, the value of the <font color="#330099">si_value.sival_int</font> element of the siginfo struct returns the address at which the bus error occurred.
+</p>
+<p>An example of handling bus error interrupts is left as an exercise for the reader.
+</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#bbffbb"><p><b>Note: </b>The returned address is always an even value, even if an odd value address is accessed. This is a VMEbus addressing artifact and not an error in the driver's operation.
+</p></td></tr></table>
+<h3><font color="#330099"><a name="_sect6">Generating VMEbus Interrupts</a></font></h3>
+<p>The Tundra Universe II chip can be used to generate interrupts on the VMEbus. Here is an example:
+</p>
+<a name="doc_pre17"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 17: gen_interrupt.c</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+#include &lt;vme/vme.h&gt;
+#include &lt;vme/vme_api.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;stdio.h&gt;
+
+#define LEVEL             VME_INTERRUPT_VIRQ3
+#define VECTOR            0x10
+
+
+int main()
+{
+	vme_bus_handle_t bus_handle;
+
+	if (vme_init(&amp;bus_handle)) {
+		perror("Error initializing the VMEbus");
+		return -1;
+	}
+
+	if (vme_interrupt_generate(bus_handle, LEVEL, VECTOR)) {
+		perror("Error generating the interrupt");
+		vme_term(bus_handle);
+		return -1;
+	}
+
+	if (vme_term(bus_handle)) {
+		perror("Error terminating");
+		return -1;
+	}
+
+	return 0;
+}
+
+
+<font color="#ff0000">// To compile the application run:</font>
+<font color="#330099"><b>sh$ </b>gcc gen_interrupt.c -o gen_interrupt -lvme</font>
+</pre></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#bbffbb"><p><b>Note: </b>Currently, the driver for the Tundra Universe II device can only generate interrupts with even vectors. An error is returned if an odd vector is passed to the <a href="vme_interrupt_generate.3.html">vme_interrupt_generate</a> function call.
+</p></td></tr></table>
+<h2><a name="doc_chap10"></a>Using Module Parameters</h2>
+<p>The following section lists the module parameters for the <font color="#330099"><tt>vme_universe</tt></font> driver and a description of how to use them.
+</p>
+<h3><font color="#330099"><a name="_sect1">Parameters</a></font></h3>
+<p>The default behavior of the VMEbus bridge device can be changed by modifying specific <font color="#330099"><tt>vme_universe</tt></font> driver parameters. In most cases, the driver's default register values are sufficient and these parameters do not need to be modified.
+</p>
+<h4><font color="#330099"><a name="_subsect1">comm</a></font></h4>
+<p>The <font color="#330099">comm</font> register specifies a value to the comm register for GE Fanuc single board computers. The register is specified below:
+</p>
+<a name="reg_pre1"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099" width="100%"><p><font color="#ffffff">
+Register 1: Comm</font></p></td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1"><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 15</td><td width="12.5%">Bit 14</td><td width="12.5%">Bit 13</td><td width="12.5%">Bit 12</td><td width="12.5%">Bit 11</td><td width="12.5%">Bit 10</td><td width="12.5%">Bit 9</td><td width="12.5%">Bit 8</td></tr><tr align="center"><td colspan="4">Reserved</td><td colspan="1">VME_EN</td><td colspan="1">BYPASS</td><td colspan="1">Reserved</td><td colspan="1">WTDSYS</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 7</td><td width="12.5%">Bit 6</td><td width="12.5%">Bit 5</td><td width="12.5%">Bit 4</td><td width="12.5%">Bit 3</td><td width="12.5%">Bit 2</td><td width="12.5%">Bit 1</td><td width="12.5%">Bit 0</td></tr><tr align="center"><td colspan="1">Reserved</td><td colspan="1">BERRI</td><td colspan="2">BTOV</td><td colspan="1">BTO</td><td colspan="1">ABLE</td><td colspan="1">SEC</td><td colspan="1">MEC</td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1" bgcolor="#ddddff">
+<tr><td>
+Bit 11:
+</td><td>VME_EN (VMEbus enable) 
+- Must be set to enable access to the VMEbus. 
+0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 10:
+</td><td>BYPASS (VMEbus endian conversion bypass) 
+- Bypasses the VMEbus endian conversion hardware. 
+0=Do not bypass endian conversion, 1=Bypass endian conversion.</td></tr><tr><td>
+Bit 8:
+</td><td>WTDSYS
+- Map watchdog timeout to cause VMEbus sysfail. 
+0=Disabled, 1=Enabled.</td></tr>
+<tr><td>
+Bit 6:
+</td><td>BERRI (Auxiliary bus error interrupt enable) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bits 5 through 4:
+</td><td>BTOV (Auxiliary bus error timeout value) 00=16 us, 01=64 us, 10=256 us, 11=1 ms.</td></tr><tr><td>
+Bit 3:
+</td><td>BTO (Auxiliary bus error timeout timer enable) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 2:
+</td><td>ABLE (Auxiliary bus error logic enable) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 1:
+</td><td>SEC (Slave endian conversion enable) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 0:
+</td><td>MEC (Master endian conversion enable) 0=Disabled, 1=Enabled.</td></tr>
+</table>
+
+
+<h4><font color="#330099"><a name="_subsect2">master_control</a></font></h4>
+<p>The <font color="#330099">master_control</font> parameter sets the value of the Tundra Universe II master control register. This register is specified below:
+</p>
+<a name="reg_pre2"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099" width="100%"><p><font color="#ffffff">
+Register 2: Master Control</font></p></td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1"><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 31</td><td width="12.5%">Bit 30</td><td width="12.5%">Bit 29</td><td width="12.5%">Bit 28</td><td width="12.5%">Bit 27</td><td width="12.5%">Bit 26</td><td width="12.5%">Bit 25</td><td width="12.5%">Bit 24</td></tr><tr align="center"><td colspan="4">MAXRTRY</td><td colspan="4">PWON</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 23</td><td width="12.5%">Bit 22</td><td width="12.5%">Bit 21</td><td width="12.5%">Bit 20</td><td width="12.5%">Bit 19</td><td width="12.5%">Bit 18</td><td width="12.5%">Bit 17</td><td width="12.5%">Bit 16</td></tr><tr align="center"><td colspan="2">VRL</td><td colspan="1">VRM</td><td colspan="1">VREL</td><td colspan="1">VOWN</td><td colspan="3">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 15</td><td width="12.5%">Bit 14</td><td width="12.5%">Bit 13</td><td width="12.5%">Bit 12</td><td width="12.5%">Bit 11</td><td width="12.5%">Bit 10</td><td width="12.5%">Bit 9</td><td width="12.5%">Bit 8</td></tr><tr align="center"><td colspan="2">Reserved</td><td colspan="2">PABS</td><td colspan="4">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 7</td><td width="12.5%">Bit 6</td><td width="12.5%">Bit 5</td><td width="12.5%">Bit 4</td><td width="12.5%">Bit 3</td><td width="12.5%">Bit 2</td><td width="12.5%">Bit 1</td><td width="12.5%">Bit 0</td></tr><tr align="center"><td colspan="8">BUS_NO</td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1" bgcolor="#ddddff">
+<tr><td>
+Bits 31 through 28:
+</td><td>MAXRTRY
+- Maximum number of retries. 
+0000=Retry forever, 0000-1111=Multiple of 64; number of retries before the PCI master interface signals an error.</td></tr><tr><td>
+Bits 27 through 24:
+</td><td>PWON (Posted write transfer count) 
+- Transfer count at which the PCI slave channel posted write FIFO gives up the VME master interface. 
+0000=128 bytes, 0001=256 bytes, 0010=512 bytes, 0011=1024 bytes, 0100=2048 bytes, 0101=4096 bytes, 1111=Early release of BBSY.</td></tr>
+<tr><td>
+Bits 23 through 22:
+</td><td>VRL (VMEbus request level) 00=Level 0, 01=Level 1, 10=Level 2, 11=Level 3.</td></tr><tr><td>
+Bit 21:
+</td><td>VRM (VMEbus request mode) 0=Demand, 1=Fair.</td></tr><tr><td>
+Bit 20:
+</td><td>VREL (VMEbus release mode) 0=Release when done, 1=Release on request.</td></tr><tr><td>
+Bit 19:
+</td><td>VOWN (VMEbus ownership bit) 0=VMEbus not captured, 1=Capture and hold the VMEbus.</td></tr>
+<tr><td>
+Bits 13 through 12:
+</td><td>PABS (PCI aligned burst size) 
+- Controls the PCI address boundary at which the Universe II breaks up a PCI transaction in the VME slave channel and the DMA channel. This field also determines when the PCI master module as part of the VME slave channel will request the PCI bus. 
+00=32 bytes, 01=64 bytes, 10=128 bytes.</td></tr>
+<tr><td>
+Bits 7 through 0:
+</td><td>BUS_NO (PCI bus number) </td></tr>
+</table>
+
+
+<h4><font color="#330099"><a name="_subsect3">miscellaneous_control</a></font></h4>
+<p>The <font color="#330099">miscellaneous_control</font> parameter sets the value of the Tundra Universe II miscellaneous control register. This register is specified below:
+</p>
+<a name="reg_pre3"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099" width="100%"><p><font color="#ffffff">
+Register 3: Miscellaneous Control</font></p></td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1"><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 31</td><td width="12.5%">Bit 30</td><td width="12.5%">Bit 29</td><td width="12.5%">Bit 28</td><td width="12.5%">Bit 27</td><td width="12.5%">Bit 26</td><td width="12.5%">Bit 25</td><td width="12.5%">Bit 24</td></tr><tr align="center"><td colspan="4">VBTO</td><td colspan="1">Reserved</td><td colspan="1">VARB</td><td colspan="2">VARBTO</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 23</td><td width="12.5%">Bit 22</td><td width="12.5%">Bit 21</td><td width="12.5%">Bit 20</td><td width="12.5%">Bit 19</td><td width="12.5%">Bit 18</td><td width="12.5%">Bit 17</td><td width="12.5%">Bit 16</td></tr><tr align="center"><td colspan="1">SW_LRST</td><td colspan="1">SW_SRST</td><td colspan="1">Reserved</td><td colspan="1">BI</td><td colspan="1">ENGBI</td><td colspan="3">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 15</td><td width="12.5%">Bit 14</td><td width="12.5%">Bit 13</td><td width="12.5%">Bit 12</td><td width="12.5%">Bit 11</td><td width="12.5%">Bit 10</td><td width="12.5%">Bit 9</td><td width="12.5%">Bit 8</td></tr><tr align="center"><td colspan="8">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 7</td><td width="12.5%">Bit 6</td><td width="12.5%">Bit 5</td><td width="12.5%">Bit 4</td><td width="12.5%">Bit 3</td><td width="12.5%">Bit 2</td><td width="12.5%">Bit 1</td><td width="12.5%">Bit 0</td></tr><tr align="center"><td colspan="8">Reserved</td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1" bgcolor="#ddddff">
+<tr><td>
+Bits 31 through 28:
+</td><td>VBTO (VMEbus timeout) 0000=Disabled, 0001=16 us, 0010=32 us, 0011=64 us, 0100=128 us, 0101=256 us, 0110=512 us, 0111=1024 us.</td></tr><tr><td>
+Bit 26:
+</td><td>VARB (VMEbus arbitration mode) 0=Round-robin, 1=Priority.</td></tr><tr><td>
+Bits 25 through 24:
+</td><td>VARBTO (VMEbus arbitration timeout) 00=Disable timeout, 01=16 us, 10=256 us.</td></tr>
+<tr><td>
+Bit 23:
+</td><td>SW_LRST (Software PCI reset) 0=No effect, 1=Initiates LRST# when the module is loaded.</td></tr><tr><td>
+Bit 22:
+</td><td>SW_SRST (Software VMEbus reset) 0=No effect, 1=Initiates VMEbus sysreset when the module is loaded.</td></tr><tr><td>
+Bit 20:
+</td><td>BI (Bi-mode) 0=Universe II is not in bi-mode, 1=Universe II is in bi-mode.</td></tr><tr><td>
+Bit 19:
+</td><td>ENGBI (Global bi-mode initiator) 0=Assertion of VIRQ1 is ignored, 1=Assertion if VIRQ1 puts the Universe in bi-mode.</td></tr>
+
+
+</table>
+
+
+<h4><font color="#330099"><a name="_subsect4">system_controller</a></font></h4>
+<p>The <font color="#330099">system_controller</font> parameter specifies the setting for the Universe II VMEbus System Controller state.  A value of <font color="#330099">0</font> specifies the Universe II is not system controller.  A value of <font color="#330099">1</font> specifies the Universe II is system controller.  Any other value leaves the system controller state at the default state for the Universe II.
+</p>
+
+
+<h4><font color="#330099"><a name="_subsect5">filter</a></font></h4>
+<p>The <font color="#330099">filter</font> parameter sets the value of the Tundra Universe II specific register. This register is specified below:
+</p>
+<a name="reg_pre4"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099" width="100%"><p><font color="#ffffff">
+Register 4: Filter</font></p></td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1"><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 31</td><td width="12.5%">Bit 30</td><td width="12.5%">Bit 29</td><td width="12.5%">Bit 28</td><td width="12.5%">Bit 27</td><td width="12.5%">Bit 26</td><td width="12.5%">Bit 25</td><td width="12.5%">Bit 24</td></tr><tr align="center"><td colspan="8">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 23</td><td width="12.5%">Bit 22</td><td width="12.5%">Bit 21</td><td width="12.5%">Bit 20</td><td width="12.5%">Bit 19</td><td width="12.5%">Bit 18</td><td width="12.5%">Bit 17</td><td width="12.5%">Bit 16</td></tr><tr align="center"><td colspan="8">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 15</td><td width="12.5%">Bit 14</td><td width="12.5%">Bit 13</td><td width="12.5%">Bit 12</td><td width="12.5%">Bit 11</td><td width="12.5%">Bit 10</td><td width="12.5%">Bit 9</td><td width="12.5%">Bit 8</td></tr><tr align="center"><td colspan="1">Reserved</td><td colspan="1">DS0/DS1</td><td colspan="1">AS</td><td colspan="1">DTKFLTR</td><td colspan="1">Reserved</td><td colspan="1">MASTt11</td><td colspan="2">READt27</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 7</td><td width="12.5%">Bit 6</td><td width="12.5%">Bit 5</td><td width="12.5%">Bit 4</td><td width="12.5%">Bit 3</td><td width="12.5%">Bit 2</td><td width="12.5%">Bit 1</td><td width="12.5%">Bit 0</td></tr><tr align="center"><td colspan="5">Reserved</td><td colspan="1">POSt28</td><td colspan="1">Reserved</td><td colspan="1">PREt28</td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1" bgcolor="#ddddff">
+
+
+<tr><td>
+Bit 14:
+</td><td>DS0/DS1 (Data strobe filter) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 13:
+</td><td>AS (Address strobe filter) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 12:
+</td><td>DTKFLTR (VME DTACK* inactive filter) 0=Slower but better filter, 1=Faster but poorer filter.</td></tr><tr><td>
+Bit 10:
+</td><td>MASTt11 (VME master parameter t11 control) 
+- DS* high time during BLT's and MBLT's. 
+0=Default, 1=Faster.</td></tr><tr><td>
+Bits 9 through 8:
+</td><td>READt27 (VME master parameter t27 control) 
+- Delay time before DS* negation after read. 
+00=Default, 01=Faster, 10=No delay.</td></tr>
+<tr><td>
+Bit 2:
+</td><td>POSt28 (VME slave parameter t28 control) 
+- Time between DS* and DTACK* for posted write. 
+0=Default, 1=Faster.</td></tr><tr><td>
+Bit 0:
+</td><td>PREt28 (VME slave parameter t28 control) 
+- Time between DS* and DTACK* for prefetch read. 
+0=Default, 1=Faster.</td></tr>
+</table>
+
+
+<h4><font color="#330099"><a name="_subsect6">pci_lo_bound</a></font></h4>
+<p>The <font color="#330099">pci_lo_bound</font> parameter specifies the lowest PCI address that can be used for a VMEbus Master Window mapping.
+</p>
+
+
+<h4><font color="#330099"><a name="_subsect7">pci_hi_bound</a></font></h4>
+<p>The <font color="#330099">pci_hi_bound</font> parameter specifies the highest PCI address that can be used for a VMEbus Master Window mapping.
+</p>
+
+
+<h4><font color="#330099"><a name="_subsect8">vrai</a></font></h4>
+<p>The <font color="#330099">vrai</font> parameter specifies the VMEbus register access image, which exposes the Tundra Universe II's registers to the VMEbus. The <font color="#330099">vrai</font> parameter is specified as: <font color="#330099">vrai=control,address</font>
+</p>
+<p>The control value of the <font color="#330099">vrai</font> parameter refers to the image control register value. This register is specified as:
+</p>
+<a name="reg_pre5"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099" width="100%"><p><font color="#ffffff">
+Register 5: VRAI (VMEbus register access image control)</font></p></td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1"><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 31</td><td width="12.5%">Bit 30</td><td width="12.5%">Bit 29</td><td width="12.5%">Bit 28</td><td width="12.5%">Bit 27</td><td width="12.5%">Bit 26</td><td width="12.5%">Bit 25</td><td width="12.5%">Bit 24</td></tr><tr align="center"><td colspan="1">EN</td><td colspan="7">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 23</td><td width="12.5%">Bit 22</td><td width="12.5%">Bit 21</td><td width="12.5%">Bit 20</td><td width="12.5%">Bit 19</td><td width="12.5%">Bit 18</td><td width="12.5%">Bit 17</td><td width="12.5%">Bit 16</td></tr><tr align="center"><td colspan="2">PGM</td><td colspan="2">SUPER</td><td colspan="2">Reserved</td><td colspan="2">VAS</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 15</td><td width="12.5%">Bit 14</td><td width="12.5%">Bit 13</td><td width="12.5%">Bit 12</td><td width="12.5%">Bit 11</td><td width="12.5%">Bit 10</td><td width="12.5%">Bit 9</td><td width="12.5%">Bit 8</td></tr><tr align="center"><td colspan="8">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 7</td><td width="12.5%">Bit 6</td><td width="12.5%">Bit 5</td><td width="12.5%">Bit 4</td><td width="12.5%">Bit 3</td><td width="12.5%">Bit 2</td><td width="12.5%">Bit 1</td><td width="12.5%">Bit 0</td></tr><tr align="center"><td colspan="8">Reserved</td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1" bgcolor="#ddddff">
+<tr><td>
+Bit 31:
+</td><td>EN (Image enable) 0=Disabled, 1=Enabled.</td></tr>
+<tr><td>
+Bits 23 through 22:
+</td><td>PGM (Program/Data AM code) 01=Data, 10=Program, 11=Both.</td></tr><tr><td>
+Bits 21 through 20:
+</td><td>SUPER (Supervisor/User AM code) 01=Non-privledged, 10=Supervisor, 11=Both.</td></tr><tr><td>
+Bits 17 through 16:
+</td><td>VAS (VMEbus address space) 00=A16, 01=A24, 10=A32.</td></tr>
+
+
+</table>
+<p>The address value of the <font color="#330099">vrai</font> parameter sets the VMEbus address to which the registers will be mapped.
+</p>
+
+
+<h4><font color="#330099"><a name="_subsect9">location_monitor</a></font></h4>
+<p>The <font color="#330099">location_monitor</font> parameter specifies a location monitor image, which enables the use of location monitor interrupts. The <font color="#330099">location_monitor</font> parameter is specified as: <font color="#330099">location_monitor=control,address</font>
+</p>
+<p>The control value of the <font color="#330099">location_monitor</font> parameter refers to the image control register value. This register is specified below:
+</p>
+<a name="reg_pre6"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099" width="100%"><p><font color="#ffffff">
+Register 6: Location Monitor Control</font></p></td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1"><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 31</td><td width="12.5%">Bit 30</td><td width="12.5%">Bit 29</td><td width="12.5%">Bit 28</td><td width="12.5%">Bit 27</td><td width="12.5%">Bit 26</td><td width="12.5%">Bit 25</td><td width="12.5%">Bit 24</td></tr><tr align="center"><td colspan="1">EN</td><td colspan="7">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 23</td><td width="12.5%">Bit 22</td><td width="12.5%">Bit 21</td><td width="12.5%">Bit 20</td><td width="12.5%">Bit 19</td><td width="12.5%">Bit 18</td><td width="12.5%">Bit 17</td><td width="12.5%">Bit 16</td></tr><tr align="center"><td colspan="2">PGM</td><td colspan="2">SUPER</td><td colspan="2">Reserved</td><td colspan="2">VAS</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 15</td><td width="12.5%">Bit 14</td><td width="12.5%">Bit 13</td><td width="12.5%">Bit 12</td><td width="12.5%">Bit 11</td><td width="12.5%">Bit 10</td><td width="12.5%">Bit 9</td><td width="12.5%">Bit 8</td></tr><tr align="center"><td colspan="8">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 7</td><td width="12.5%">Bit 6</td><td width="12.5%">Bit 5</td><td width="12.5%">Bit 4</td><td width="12.5%">Bit 3</td><td width="12.5%">Bit 2</td><td width="12.5%">Bit 1</td><td width="12.5%">Bit 0</td></tr><tr align="center"><td colspan="8">Reserved</td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1" bgcolor="#ddddff">
+<tr><td>
+Bit 31:
+</td><td>EN (Image enable) 0=Disabled, 1=Enabled.</td></tr>
+<tr><td>
+Bits 23 through 22:
+</td><td>PGM (Program/Data AM code) 01=Data, 10=Program, 11=Both.</td></tr><tr><td>
+Bits 21 through 20:
+</td><td>SUPER (Supervisor/User AM code) 01=Non-privledged, 10=Supervisor, 11=Both.</td></tr><tr><td>
+Bits 17 through 16:
+</td><td>VAS (VMEbus address space) 00=A16, 01=A24, 10=A32.</td></tr>
+
+
+</table>
+<p>The address value of the <font color="#330099">location_monitor</font> parameter sets the VMEbus address to which the registers will be mapped.
+</p>
+
+
+<h4><font color="#330099"><a name="_subsect10">master_window[0-7]</a></font></h4>
+<p>The <font color="#330099">master_window</font> parameters specify any of the 8 VMEbus Master Windows. The <font color="#330099">master_window</font> parameter is specified as: <font color="#330099">master_window&lt;number&gt;=control,size,VMEbus address,[PCI address]</font>; Substitute the window number for &lt;number&gt;.
+</p>
+<p>The control value of the <font color="#330099">master_window</font> parameter refers to the image control register. This register is specified below:
+</p>
+<a name="reg_pre7"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099" width="100%"><p><font color="#ffffff">
+Register 7: Master Window Control</font></p></td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1"><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 31</td><td width="12.5%">Bit 30</td><td width="12.5%">Bit 29</td><td width="12.5%">Bit 28</td><td width="12.5%">Bit 27</td><td width="12.5%">Bit 26</td><td width="12.5%">Bit 25</td><td width="12.5%">Bit 24</td></tr><tr align="center"><td colspan="1">EN</td><td colspan="1">PWEN</td><td colspan="6">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 23</td><td width="12.5%">Bit 22</td><td width="12.5%">Bit 21</td><td width="12.5%">Bit 20</td><td width="12.5%">Bit 19</td><td width="12.5%">Bit 18</td><td width="12.5%">Bit 17</td><td width="12.5%">Bit 16</td></tr><tr align="center"><td colspan="2">VDW</td><td colspan="3">Reserved</td><td colspan="3">VAS</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 15</td><td width="12.5%">Bit 14</td><td width="12.5%">Bit 13</td><td width="12.5%">Bit 12</td><td width="12.5%">Bit 11</td><td width="12.5%">Bit 10</td><td width="12.5%">Bit 9</td><td width="12.5%">Bit 8</td></tr><tr align="center"><td colspan="1">Reserved</td><td colspan="1">PGM</td><td colspan="1">Reserved</td><td colspan="1">SUPER</td><td colspan="3">Reserved</td><td colspan="1">VCT</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 7</td><td width="12.5%">Bit 6</td><td width="12.5%">Bit 5</td><td width="12.5%">Bit 4</td><td width="12.5%">Bit 3</td><td width="12.5%">Bit 2</td><td width="12.5%">Bit 1</td><td width="12.5%">Bit 0</td></tr><tr align="center"><td colspan="7">Reserved</td><td colspan="1">LAS</td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1" bgcolor="#ddddff">
+<tr><td>
+Bit 31:
+</td><td>EN (Image enable) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 30:
+</td><td>PWEN (Posted write enable) 0=Disabled, 1=Enabled.</td></tr>
+<tr><td>
+Bits 23 through 22:
+</td><td>VDW (VMEbus maximum data width) 00=8 bits, 01=16 bits, 10=32 bits, 11=64 bits.</td></tr><tr><td>
+Bits 18 through 16:
+</td><td>VAS (VMEbus address space) 000=A16, 001=A24, 010=A32.</td></tr>
+<tr><td>
+Bit 14:
+</td><td>PGM (Program/Data AM code) 0=Data, 1=Program.</td></tr><tr><td>
+Bit 12:
+</td><td>SUPER (Supervisor/User AM code) 0=Non-privledged, 1=Supervisor.</td></tr><tr><td>
+Bit 8:
+</td><td>VCT (VMEbus cycle type) 0=No VMEbus block transfers, 1=single VMEbus block transfers.</td></tr>
+<tr><td>
+Bit 0:
+</td><td>LAS (PCI bus memory space) 0=PCI bus memory space, 1=PCI bus I/O space.</td></tr>
+</table>
+<p>The size value of the <font color="#330099">master_window</font> parameter sets the minimum size of the window.
+</p>
+<p>The VMEbus address value of the <font color="#330099">master_window</font> parameter sets the VMEbus address of the window.
+</p>
+<p>The PCI address value of the <font color="#330099">master_window</font> parameter sets the local PCI address of the window and is an optional parameter. If this parameter is not specified, the driver selects a PCI address. If a PCI address is specified for this parameter, ensure that it does not conflict with any other devices in the system. See the <font>/proc/iomem</font> file to determine the addresses of other devices.
+</p>
+
+
+<h4><font color="#330099"><a name="_subsect11">slave_window[0-7]</a></font></h4>
+<p>The <font color="#330099">slave_window</font> parameters specify any of the 8 VMEbus Slave Windows. The <font color="#330099">slave_window</font> parameter is specified as: <font color="#330099">slave_window&lt;number&gt;=control,size,VMEbus address,[PCI address]</font>; Substitute the window number for &lt;number&gt;.
+</p>
+<p>The control value of the <font color="#330099">slave_window</font> parameter refers to the image control register. This register is specified below:
+</p>
+<a name="reg_pre8"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099" width="100%"><p><font color="#ffffff">
+Register 8: Slave Window Control</font></p></td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1"><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 31</td><td width="12.5%">Bit 30</td><td width="12.5%">Bit 29</td><td width="12.5%">Bit 28</td><td width="12.5%">Bit 27</td><td width="12.5%">Bit 26</td><td width="12.5%">Bit 25</td><td width="12.5%">Bit 24</td></tr><tr align="center"><td colspan="1">EN</td><td colspan="1">PWEN</td><td colspan="1">PREN</td><td colspan="5">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 23</td><td width="12.5%">Bit 22</td><td width="12.5%">Bit 21</td><td width="12.5%">Bit 20</td><td width="12.5%">Bit 19</td><td width="12.5%">Bit 18</td><td width="12.5%">Bit 17</td><td width="12.5%">Bit 16</td></tr><tr align="center"><td colspan="2">PGM</td><td colspan="2">SUPER</td><td colspan="2">Reserved</td><td colspan="2">VAS</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 15</td><td width="12.5%">Bit 14</td><td width="12.5%">Bit 13</td><td width="12.5%">Bit 12</td><td width="12.5%">Bit 11</td><td width="12.5%">Bit 10</td><td width="12.5%">Bit 9</td><td width="12.5%">Bit 8</td></tr><tr align="center"><td colspan="8">Reserved</td></tr><tr align="center" bgcolor="#ddddff"><td width="12.5%">Bit 7</td><td width="12.5%">Bit 6</td><td width="12.5%">Bit 5</td><td width="12.5%">Bit 4</td><td width="12.5%">Bit 3</td><td width="12.5%">Bit 2</td><td width="12.5%">Bit 1</td><td width="12.5%">Bit 0</td></tr><tr align="center"><td colspan="1">LD64EN</td><td colspan="1">LLRMW</td><td colspan="4">Reserved</td><td colspan="2">LAS</td></tr></table><table width="100%" cellspacing="0" cellpadding="0" border="1" bgcolor="#ddddff">
+<tr><td>
+Bit 31:
+</td><td>EN (Image enable) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 30:
+</td><td>PWEN (Posted write enable) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 29:
+</td><td>PREN (Prefetch read enable) 0=Disabled, 1=Enabled.</td></tr>
+<tr><td>
+Bits 23 through 22:
+</td><td>PGM (Program/Data AM code) 01=Data, 10=Program, 11=Both.</td></tr><tr><td>
+Bits 21 through 20:
+</td><td>SUPER (Supervisor/User AM code) 01=Non-privledged, 10=Supervisor, 11=Both.</td></tr><tr><td>
+Bits 17 through 16:
+</td><td>VAS (VMEbus address space) 00=A16, 01=A24, 10=A32.</td></tr>
+
+<tr><td>
+Bit 7:
+</td><td>LD64EN (Enable 64-bit PCI bit transactions) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bit 6:
+</td><td>LLRMW (Enable PCI bus lock on VMEbus RMW) 0=Disabled, 1=Enabled.</td></tr><tr><td>
+Bits 1 through 0:
+</td><td>LAS (PCI bus address space) 00=PCI bus memory space, 01=PCI bus I/O space, 10=PCI bus configuration space.</td></tr>
+</table>
+<p>The size value of the <font color="#330099">slave_window</font> parameter sets the minimum size of the window.
+</p>
+<p>The VMEbus address value of the <font color="#330099">slave_window</font> parameter sets the VMEbus address of the window.
+</p>
+<p>The PCI address value of the <font color="#330099">slave_window</font> parameter sets the local PCI address of the window and is an optional parameter. If this parameter is not specified, the driver will attempt to allocate RAM for the Slave Window.
+</p>
+
+<h3><font color="#330099"><a name="_sect2">How to Use Module Parameters</a></font></h3>
+<p>To use module parameters, add them to the <font>/etc/modules.conf</font> file like this:
+</p>
+<a name="doc_pre18"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 18: Using Module Parameters</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#330099">#We'll specify the comm register to turn slave endian conversion off</font>
+<font color="#330099">#and a 0x10000 byte Slave Window in A24 space at VMEbus address 0x0.</font>
+<font color="#330099">options vme_universe comm=0x845 slave_window0=0xE0F10000,0x10000,0x0</font>
+</pre></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffbbbb"><p><b>Warning: </b>Module parameters can be passed in using <font color="#330099"><tt>insmod</tt></font>, but <font color="#330099"><tt>insmod</tt></font> does not read parameters from <font>/etc/modules.conf</font>.
+</p></td></tr></table> 
+<p>Module parameters are required only when unusual settings are to be specified. The driver's default values are usually sufficient. Most features of the Tundra Universe II device can be programmed using API functions.
+</p>
+<h2><a name="doc_chap11"></a>Accessing the VMEbus Using a Kernel Module</h2>
+<p>All of the API functions we have already discussed can also be accessed by other kernel modules. In addition, the following functions can be used with kernel modules:
+</p>
+<a href="vme_interrupt_asserted.9.html">vme_interrupt_asserted</a><br>
+<a href="vme_interrupt_clear.9.html">vme_interrupt_clear</a><br>
+<a href="vme_interrupt_disable.9.html">vme_interrupt_disable</a><br>
+<a href="vme_interrupt_enable.9.html">vme_interrupt_enable</a><br>
+<a href="vme_interrupt_irq.9.html">vme_interrupt_irq</a><br>
+<a href="vme_interrupt_vector.9.html">vme_interrupt_vector</a><br>
+<p>Here is an example module that interfaces with the VMEbus using the <font color="#330099"><tt>vme_universe</tt></font> driver:
+</p>
+<a name="doc_pre19"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 19: vme_module.c</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+#include &lt;linux/modversions.h&gt;
+#include &lt;linux/config.h&gt;
+#ifdef CONFIG_SMP
+#define __SMP__
+#endif
+
+#include &lt;linux/module.h&gt;
+#include &lt;asm/uaccess.h&gt;
+#include "vme/vme.h"
+#include "vme/vme_api.h"
+
+
+#define MODULE_NAME  "vme_example"
+MODULE_AUTHOR("GE Fanuc &lt;www.gefanuc.com/embedded&gt;");
+MODULE_DESCRIPTION("VME module example");
+#ifdef MODULE_LICENSE
+MODULE_LICENSE("Dual BSD/GPL");
+#endif
+
+int vme_open(struct inode *inode, struct file *file_ptr);
+int vme_close(struct inode *inode, struct file *file_ptr);
+ssize_t vme_read(struct file *file_ptr, char *buffer, size_t size,
+		 loff_t * off);
+ssize_t vme_write(struct file *file_ptr, const char *buffer, size_t size,
+		  loff_t * off);
+
+static struct file_operations file_ops = {
+	open:vme_open,
+	release:vme_close,
+	read:vme_read,
+	write:vme_write,
+};
+
+
+static vme_bus_handle_t bus;
+static vme_master_handle_t window;
+static vme_interrupt_handle_t interrupt;
+static char *ptr;
+static int irq, major;
+
+
+#define VME_ADDRESS          0x08000000
+#define ADDRESS_MODIFIER     VME_A32SD
+#define NBYTES               0x40
+#define LEVEL                VME_INTERRUPT_VIRQ3
+#define VECTOR               0x10
+
+
+/*============================================================================
+ * Hook to the open file operation
+ */
+int vme_open(struct inode *inode, struct file *file_ptr)
+{
+	MOD_INC_USE_COUNT;
+	return 0;
+}
+
+
+/*============================================================================
+ * Hook to the close file operation
+ */
+int vme_close(struct inode *inode, struct file *file_ptr)
+{
+	MOD_DEC_USE_COUNT;
+	return 0;
+}
+
+
+/*============================================================================
+ * Hook to the read file operation
+ */
+ssize_t vme_read(struct file * file_ptr, char *buffer, size_t size,
+		 loff_t * off)
+{
+	int nbytes, bytes_rem;
+
+	/* Calculate how many bytes we can read (all|some|none)?
+	 */
+	nbytes = (size &gt; NBYTES - *off) ? NBYTES - *off : size;
+	if (0 &gt;= nbytes)
+		return 0;
+
+	/* Transfer the data
+	 */
+	bytes_rem = copy_to_user(buffer, ptr + *off, nbytes);
+	if (bytes_rem)
+		return -EFAULT;
+
+	nbytes -= bytes_rem;
+
+	/* Update the file position
+	 */
+	*off += nbytes;
+
+	/* Return the actual number of bytes transferred
+	 */
+	return nbytes;
+}
+
+
+/*============================================================================
+ * Hook to the write file operation
+ */
+ssize_t vme_write(struct file * file_ptr, const char *buffer, size_t size,
+		  loff_t * off)
+{
+	int nbytes, bytes_rem;
+
+	/* Calculate how many bytes we can read (all|some|none)?
+	 */
+	nbytes = (size &gt; NBYTES - *off) ? NBYTES - *off : size;
+	if (0 &gt;= nbytes)
+		return 0;
+
+	/* Transfer the data
+	 */
+	bytes_rem = copy_from_user(ptr + *off, buffer, nbytes);
+	if (bytes_rem)
+		return -EFAULT;
+
+	nbytes -= bytes_rem;
+
+	/* Update the file position
+	 */
+	*off += nbytes;
+
+	/* Return the actual number of bytes transferred
+	 */
+	return nbytes;
+}
+
+
+/*============================================================================
+ * Interrupt service routine
+ */
+void vme_isr(int irq, void *dev_id, struct pt_regs *regs)
+{
+	int vector;
+
+	/* Is the interrupt on our level? If vme_interrupt_asserted returns
+	   true, then the interrupt was on the level that we reserved and we
+	   should do something clever.
+	 */
+	if (vme_interrupt_asserted(bus, interrupt)) {
+		vme_interrupt_vector(bus, interrupt, &amp;vector);
+		printk(KERN_NOTICE MODULE_NAME ":Interrupt vector 0x%x\n",
+		       vector);
+
+		/* Clear the interrupt
+		 */
+		vme_interrupt_clear(bus, interrupt);
+	}
+}
+
+
+/*===========================================================================
+ * Driver module initialization
+ */
+int init_module(void)
+{
+	if (vme_init(&amp;bus)) {
+		printk(KERN_ERR MODULE_NAME ": Failed vme_init\n");
+		return -1;
+	}
+
+	if (vme_master_window_create(bus, &amp;window, VME_ADDRESS,
+				     ADDRESS_MODIFIER, NBYTES, VME_CTL_PWEN,
+				     NULL)) {
+		printk(KERN_ERR MODULE_NAME
+		       ":Failed vme_master_window_create\n");
+		goto error_create;
+	}
+
+	ptr = vme_master_window_map(bus, window, 0);
+	if (NULL == ptr) {
+		printk(KERN_ERR MODULE_NAME ":Failed vme_master_window_map\n");
+		goto error_map;
+	}
+
+	/* Get the IRQ of the VMEbus bridge device
+	 */
+	if (vme_interrupt_irq(bus, &amp;irq)) {
+		printk(KERN_ERR MODULE_NAME ":Failed vme_interrupt_irq\n");
+		goto error_irq;
+	}
+
+	if (request_irq(irq, vme_isr, SA_SHIRQ, MODULE_NAME, &amp;file_ops)) {
+		printk(KERN_ERR MODULE_NAME ":Failed reqest_irq\n");
+		goto error_irq;
+	}
+
+	/* The VME_INTERRUPT_RESERVE flags tells the VMEbus bridge driver to not
+	   do anything with interrupts on the level we specify here (not just
+	   level/vector, but the entire level). Therefore, be sure to always do
+	   the request_irq before vme_interrupt_attach, otherwise you will have
+	   a race condition where noone handles the interrupt, and your system
+	   could lock up.
+	 */
+	if (vme_interrupt_attach(bus, &amp;interrupt, LEVEL, VECTOR,
+				 VME_INTERRUPT_RESERVE, NULL)) {
+		printk(KERN_ERR MODULE_NAME ":Failed vme_interrupt_attach\n");
+		goto error_interrupt_attach;
+	}
+
+	/* We let the kernel pick a character device major number for us.
+	 */
+	major = register_chrdev(0, MODULE_NAME, &amp;file_ops);
+	if ((-EBUSY == major) || (-EINVAL == major)) {
+		printk(KERN_ERR MODULE_NAME ":Failed register_chrdev\n");
+		goto error_register;
+	}
+
+	return 0;
+
+      error_register:
+	vme_interrupt_release(bus, interrupt);
+
+      error_interrupt_attach:
+	free_irq(irq, &amp;file_ops);
+
+      error_irq:
+	vme_master_window_unmap(bus, window);
+
+      error_map:
+	vme_master_window_release(bus, window);
+
+      error_create:
+	vme_term(bus);
+
+	return -1;
+}
+
+
+/*============================================================================
+ * Driver module exit routine
+ */
+void cleanup_module(void)
+{
+	unregister_chrdev(major, MODULE_NAME);
+	vme_interrupt_release(bus, interrupt);
+	free_irq(irq, &amp;file_ops);
+	vme_master_window_unmap(bus, window);
+	vme_master_window_release(bus, window);
+	vme_term(bus);
+}
+
+
+</pre></td></tr></table>
+<p>And here is the Makefile to compile the module:
+</p>
+<a name="doc_pre20"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 20: Makefile</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+
+
+KERNELREV:=$(shell uname -r)
+KERNELSRC:=/lib/modules/$(KERNELREV)/build
+
+MODNAME:=vme_example.o
+MODDIR:=/lib/modules/$(KERNELREV)/kernel/drivers/vme
+
+CFLAGS = -D__KERNEL__ -DMODULE -I$(KERNELSRC)/include -O -Wall
+
+all: $(MODNAME)
+
+install: all
+	install -m0644 -oroot -groot -D $(MODNAME) $(MODDIR)/$(MODNAME)
+	/sbin/depmod
+
+uninstall:
+	rm -f $(MODDIR)/$(MODNAME)
+
+$(MODNAME): vme_module.o
+	$(LD) -r $^ -o $@
+
+clean:
+	rm -f *.o *~
+
+
+</pre></td></tr></table>
+<p>This module implements read and write interfaces to the VMIVME-5588DMA board used in an earlier example, and also handles VMEbus interrupts on level 3.
+</p>
+<p>Note that the calls used to create and map a VMEbus Master Window are identical to the calls used in the earlier <font color="#330099"><tt>peek</tt></font> example. The pointer returned by <a href="vme_master_window_map.3.html">vme_master_window_map</a> is then used to access the VMEbus in the read and write functions.
+</p>
+<p>The <a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a> function is called with the flag <font color="#330099">VME_INTERRUPT_RESERVE</font>, which informs the <font color="#330099"><tt>vme_universe</tt></font> driver that another module will handle interrupts on the given VMEbus level. This is accomplished by attaching an interrupt handler to the same IRQ as the <font color="#330099"><tt>vme_universe</tt></font> driver (i.e. a shared PCI interrupt). Any time an interrupt occurs on the VMEbus, both the ISR for the <font color="#330099"><tt>vme_universe</tt></font> driver and the ISR for our module will be executed. The <a href="vme_interrupt_asserted.9.html">vme_interrupt_asserted</a> function must then be called to determine if the interrupt occured on the VMEbus level that we reserved. <a href="vme_interrupt_asserted.9.html">vme_interrupt_asserted</a> returns a non-zero value if the interrupt is on the reserved level, or 0 if it is not on our reserved level.
+</p>
+<font color="#ff0000">Note the comment in the ISR that we should do something clever here. Obviously a print statement is not clever. Try replacing it with something more interesting!
+</font>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffffbb"><p><b>Important: </b>Although a vector has been passed into the <a href="vme_interrupt_attach.3.html">vme_interrupt_attach</a> function, when <font color="#330099">VME_INTERRUPT_RESERVE</font> is used, that entire VMEbus interrupt level is reserved regardless of the vector requested. Your code should be prepared to deal with unexpected interrupt vectors.
+</p></td></tr></table>
+<p>So let's do something with this module.
+</p>
+<a name="doc_pre21"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 21: Using the Kernel Module</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#330099"><b>sh# </b>make install</font>
+<font color="#330099"><b>sh# </b>modprobe vme_example</font>
+<font color="#330099"><b>sh$ </b>lsmod</font>
+<font color="#330099">Module                  Size  Used by    Not tainted
+vme_example             2784   0 (unused)
+vme_universe           69248   1 [vme_example]
+</font>
+<font color="#ff0000">// Notice that our module vme_example is loaded.</font>
+<font color="#ff0000">// Also notice that it has been registered as a user of the vme_universe driver.</font>
+<font color="#330099"><b>sh$ </b>cat /proc/interrupts</font>
+<font color="#330099"> CPU0       
+  0:    1240357          XT-PIC  timer
+  1:       2543          XT-PIC  keyboard
+  2:          0          XT-PIC  cascade
+  8:          1          XT-PIC  rtc
+ 10:          0          XT-PIC  vme_universe, vme_example
+ 11:         74          XT-PIC  DC21143 (eth0)
+ 12:         20          XT-PIC  PS/2 Mouse
+ 14:      13529          XT-PIC  ide0
+ 15:         97          XT-PIC  ide1
+NMI:          0 
+LOC:          0 
+ERR:          0
+MIS:          0
+</font>
+<font color="#ff0000">// Notice here that the drivers vme_example and vme_universe are sharing an IRQ.</font>
+<font color="#ff0000">// That is what we want.
+</font>
+<font color="#ff0000">// Because we let the kernel choose the major number for our driver, we need to</font>
+<font color="#ff0000">// find out what that number is and create a file in the /dev/ directory for it.</font>
+<font color="#330099"><b>sh$ </b>grep vme /proc/devices</font>
+<font color="#330099">221 vme_universe
+254 vme_example
+</font>
+<font color="#330099"><b>sh# </b>mknod --mode=666 /dev/vme_example c 254 0</font>
+<font color="#330099"><b>sh$ </b>ls -l /dev/vme_example</font>
+<font color="#330099">crw-rw-rw-    1 root     root     254,   0 Jul 13 00:17 /dev/vme_example
+</font>
+<font color="#ff0000">// Now we should be able to dump the VMEbus registers mapped by our module</font>
+<font color="#ff0000">// I'll use the command 'od' (octal dump) to do it</font>
+<font color="#330099"><b>sh$ </b>od -Ax -t x1 /dev/vme_example</font>
+<font color="#330099">000000 ff 70 4b ff 00 ff e0 01 ff ff ff ff ff ff ff ff
+000010 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000020 00 00 00 00 00 ff ff ff 00 ff ff ff 00 ff ff ff
+000030 0f ff ff ff 0f ff ff ff 0f ff ff ff 0f ff ff ff
+000040
+</font>
+<font color="#ff0000">// Hmmm! There's that byte swapping thing again!</font>
+</pre></td></tr></table>
+<p>The data is swapped because the copy_to_user function in vme_read moves the data as longwords, but we printed the data as bytes. This is the same problem we saw in the DMA section.
+</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#bbffbb"><p><b>Note: </b>This section is not intended to be a tutorial on writing Linux kernel modules. I suggest <a href="http://www.xml.com/ldd/chapter/book/">Linux Device Drivers, 2nd edition</a> by Alessandro Rubini and Jonathan Corbet as a good place to start learning how to write Linux kernel modules.
+</p></td></tr></table>
+<h2><a name="doc_chap12"></a>Reserving RAM at Boot Time</h2>
+<p>As noted in previous sections, it is sometimes necessary to reserve RAM at boot time for slave RAM or DMA buffers.</p>
+<p>For example, to reserve 2MBytes of a total 64MBytes of RAM while using LILO, add the line <font color="#330099">append="mem=62M"</font> in <font>/etc/lilo.conf</font> file and run the <font color="#330099"><tt>lilo</tt></font> command.
+</p>
+<a name="doc_pre22"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 22: Reserving RAM at Boot Time Using LILO</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+image=/boot/vmlinuz-2.4.18-3smp
+      label=Linux
+      root=/dev/hda1
+      initrd=/boot/initrd-2.4.18-3.img
+      append="mem=62M"
+</pre></td></tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#ffffbb"><p><b>Important: </b>If LILO is not run, the changes will not take effect.</p></td></tr></table>
+<p>If you are using GRUB, add mem=62M to the kernel boot line in the <font>/boot.grub/menu.lst</font> file, as illustrated below.
+</p>
+<a name="doc_pre23"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 23: Reserving RAM at Boot Time Using GRUB</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+title Linux (2.4.18-3smp)
+	root (hd0,0)
+	kernel /boot/vmlinuz-2.4.18-3smp ro root=/dev/hda1 mem=62M
+	initrd /boot/initrd-2.4.18-3.img
+</pre></td></tr></table>
+<p>In older kernel versions, specifying mem=62M ensured that the base address of the reserved memory would be located at memory address 0x3e00000 (1024 * 1024 * 62). This cannot be assumed with newer kernel versions. See <font>/proc/iomem</font> to determine where the top of the kernel's physical RAM is located.
+</p>
+<p>Here is the resulting <font>/proc/iomem</font> output on my machine. The details will vary from system to system.
+</p>
+<a name="doc_pre24"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 24: /proc/iomem</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+00000000-0009fbff : System RAM
+0009fc00-0009ffff : reserved
+000a0000-000bffff : Video RAM area
+000c0000-000c7fff : Video ROM
+000f0000-000fffff : System ROM
+00100000-03e603ff : System RAM
+  00100000-002342b0 : Kernel code
+  002342b1-00306b3f : Kernel data
+e0000000-e7ffffff : PCI Bus #01
+  e0000000-e3ffffff : S3 Inc. Trio 64 3D
+e8000000-ebffffff : Intel Corp. 440BX/ZX - 82443BX/ZX Host bridge
+ed000000-ed0003ff : Digital Equipment Corporation DECchip 21142/43
+ed001000-ed001fff : Tundra Semiconductor Corp. CA91C042 [Universe]
+</pre></td></tr></table>
+<p>Since the last entry for System RAM is at 0x3e603ff, my reserved memory starts at 0x3e60400. To be safe, it is often better to use page aligned memory 4kb on x86), so I would use 0x3e61000 as my base address, meaning that I do not have the full 2MB. It might be smart to reserve a little extra memory when you do this.
+</p>
+<p>There is one more thing to worry about. The <font color="#330099"><tt>vme_universe</tt></font> driver inquires with the kernel to determine which memory regions can be used for the placement of VMEbus windows. Since the kernel is not aware of the reserved memory, it may allow the <font color="#330099"><tt>vme_universe</tt></font> driver to create a VMEbus window that conflicts with the specified reserved RAM. Thus, the <font color="#330099"><tt>vme_universe</tt></font> driver needs to know about the reserved RAM. This can be done by passing the <font color="#330099">pci_lo_bound</font> module parameter to the <font color="#330099"><tt>vme_universe</tt></font> driver. Since the machine in our example has 64MB of RAM we need to call the <font color="#330099"><tt>vme_universe</tt></font> driver with the parameter pci_lo_bound=0x04000000. This is how we would add the parameter to the <font>/etc/modules.conf</font> file:
+</p>
+<a name="doc_pre25"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 25: /etc/modules.conf</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+options vme_universe pci_lo_bound=0x04000000
+</pre></td></tr></table>
+<h2><a name="doc_chap13"></a>Debugging Tips</h2><h3><font color="#330099"><a name="_sect1">Proc Pages</a></font></h3>
+<p>The following files contain useful information for debugging VMEbus accesses.
+</p>
+<p><font>/proc/iomem</font> - Displays the memory allocation for your system. When Master Windows are created, an entry is made for them in this file. For example:
+</p>
+<p><font color="#330099">08000000-080fffff : VMEbus master window 0</font>
+</p>
+<p><font>/proc/interrupts</font> - Displays the assignment of drivers to IRQ's, as well as a count of how many interrupts have ocurred on a particular IRQ. When the <font color="#330099"><tt>vme_universe</tt></font> driver is loaded, an entry such as the following will be displayed:
+</p>
+<p><font color="#330099">10:          0          XT-PIC  vme_universe</font>
+</p>
+<p><font>/proc/vme/ctl</font>, <font>/proc/vme/interrupt</font>, <font>/proc/vme/master</font> and <font>/proc/vme/slave</font> - These proc pages are registered by the <font color="#330099"><tt>vme_universe</tt></font> driver and can be used to retrieve information about the status of the driver.
+</p>
+<h3><font color="#330099"><a name="_sect2">Utilities</a></font></h3>
+<p>The utility commands described previously make excellent debug tools.  Use them to access a board on the VMEbus, to test if interrupts are being asserted, or to assert them, and to test endian conversion hardware.
+</p>
+<h4><font color="#330099"><a name="_subsect1">Debugging Bus Errors</a></font></h4>
+<p>A common case in which these utilities can be useful is testing for bus errors.
+</p>
+<p>If the data read from the bus is all "F's", a bus error may exist. Use the <a href="vme_catch_interrupt.1.html">vme_catch_interrupt</a> utility to determine if this is the case:
+</p>
+<a name="doc_pre26"></a><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td bgcolor="#330099"><p><font color="#ffffff">
+Code listing 26: Checking for Bus Errors</font></p></td></tr><tr><td bgcolor="#ddddff"><pre>
+<font color="#ff0000">// First start the interrupt handler utility to watch for bus errors</font>
+<font color="#ff0000">// Be sure to put it in the background</font>
+<font color="#330099"><b>sh$ </b>vme_catch_interrupt -lVME_INTERRUPT_BERR &amp;</font>
+<font color="#ff0000">// Then we are going to try to read from the VMEbus using vme_peek</font>
+<font color="#330099"><b>sh$ </b>vme_peek -aVME_A24SD -A0x8000</font>
+<font color="#330099">BERR: address = 0x8000</font>
+<font color="#330099">ff</font>
+</pre></td></tr></table>
+<p>In this example, a bus error occurred at VMEbus address 0x8000. The most likely cause is that no board is addressed at 0x8000 with address modifier A24SD. Recheck the addressing of the target board and ensure the correct address is being used.
+</p>
+
+<h3><font color="#330099"><a name="_sect3">Compiling with Debug</a></font></h3>
+<p>To compile the <font color="#330099"><tt>vme_universe</tt></font> driver with debug functionality, add <font color="#330099">-DDEBUG</font> to <font color="#330099">CFLAGS</font> in the <font>Makefile</font>. When the driver is installed, it will print messages to the <font>/var/log/messages</font> file. The contents of this file can be viewed with the <font color="#330099"><tt>dmesg</tt></font> command.
+</p>
+<h2><a name="doc_chap14"></a>Changes Since Version 2.x</h2>
+<p>Major changes have been made in the functionality of the VMEbus driver for Linux. The following is a summary of the most important changes:
+</p>
+<ul>
+<li>Dynamic window allocation - Windows can now be allocated using API calls. Previously, the only way to allocate windows was to set them up in the <font>/etc/modules.conf</font> file. Additionally, the physical address no longer needs to be specified by the user; the driver can now choose it (which is the recommended method). However, if you prefer, you can still choose the physical address and configure the windows in the <font>/etc/modules.conf</font> file.
+</li>
+<li>Inter-module interface - The VMEbus can now be accessed through the driver from other kernel modules.
+</li>
+<li>SMP support.
+</li>
+<li>A completely new API to support some of the new features.
+</li>
+</ul>
+
+<h3><font color="#330099"><a name="_sect1">Interfacing with Legacy Code</a></font></h3>
+<p>The 2.x API is still supported through a legacy library. Existing applications written with earlier versions will work without modification (famous last words!), but must be recompiled before they can be used.
+</p>
+<h4><font color="#330099"><a name="_subsect1">Installing the Legacy Library</a></font></h4>
+<p>To install the legacy library, switch to the legacy directory of the <font color="#330099"><tt>vme_universe</tt></font> project and run <font color="#330099"><tt>make install</tt></font>.
+</p>
+
+
+<h4><font color="#330099"><a name="_subsect2">Compiling Applications</a></font></h4>
+<p>To compile applications using the VME legacy library, link with the libraries <font>liblegacy_vme.a</font> and <font>libvme.so</font> by including the compiler switches <font color="#330099">-llegacy_vme -lvme</font>.
+</p>
+<p>You will receive warnings that the header files in the directory <font>/usr/include/vmic</font> are deprecated. These warnings are normal and can be ignored.
+</p>
+
+
+<h2><a name="doc_chap15"></a>License</h2>
+<p>All of the source code supplied with the <font color="#330099"><tt>vme_universe</tt></font> project is covered under the BSD license.
+</p>
+<br><br></td></tr></table></td></tr><tr><td width="100%" bgcolor="#330099"><font color="#ffffff">
+Copyright 2006 GE Fanuc Embedded Systems, Inc. Questions, Comments, Corrections?  Email <a href="mailto:support.embeddedsystems@gefanuc.com"><font color="#00ff00">support.embeddedsystems@gefanuc.com</font></a>.
+</font></td></tr></table></body></html>

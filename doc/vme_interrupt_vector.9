@@ -1,0 +1,89 @@
+
+.TH "vme_interrupt_vector" 9
+
+.SH "NAME"
+vme_interrupt_vector - Get the current VME interrupt vector. Not applicable with Solaris.
+
+
+.SH "SYNOPSIS"
+int vme_interrupt_vector
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_interrupt_handle_t interrupt_handle,
+.br
+int * vector
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_interrupt_handle_t interrupt_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_interrupt_attach(3)
+.
+
+.br
+
+.in
+.br
+
+.B int * vector
+.br
+.in +5
+
+.br
+Interrupt vector.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Get the current VME interrupt vector.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "NOTES"
+The handle used with this function must have been allocated with the flag VME_INTERRUPT_RESERVE.
+
+.br
+This function is olny available from within the Linux kernel.
+
+.br
+
+.SH "SEE ALSO"
+vme_interrupt_asserted(9), vme_interrupt_attach(3), vme_interrupt_clear(9), vme_interrupt_disable(9), vme_interrupt_enable(9), vme_interrupt_generate(3), vme_interrupt_irq(9), vme_interrupt_release(3)
+.br

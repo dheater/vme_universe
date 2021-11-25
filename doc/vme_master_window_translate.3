@@ -1,0 +1,86 @@
+
+.TH "vme_master_window_translate" 3
+
+.SH "NAME"
+vme_master_window_translate - Shifts the base VMEbus address of a VME Master Window. Currently not implemented in Solaris.
+
+
+.SH "SYNOPSIS"
+int vme_master_window_translate
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_master_handle_t window_handle,
+.br
+uint64_t vme_addr
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_master_handle_t window_handle
+.br
+.in +5
+
+.br
+Window handle allocated by vme_master_window_create(3)
+.
+
+.br
+
+.in
+.br
+
+.B uint64_t vme_addr
+.br
+.in +5
+
+.br
+VMEbus address.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Shifts the base VMEbus address of a VME Master Window.
+
+.br
+
+.br
+The window must be created with the VME_CTL_EXCLUSIVE flag to use this function. The new VMEbus address must be aligned identically to the same 64-Kbyte boundary as the original VMEbus address.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_master_window_create(3), vme_master_window_map(3), vme_master_window_phys_addr(3), vme_master_window_release(3), vme_master_window_unmap(3)
+.br

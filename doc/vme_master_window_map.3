@@ -1,0 +1,81 @@
+
+.TH "vme_master_window_map" 3
+
+.SH "NAME"
+vme_master_window_map - Maps the VMEbus Master Window to local memory.
+
+
+.SH "SYNOPSIS"
+void * vme_master_window_map
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_master_handle_t window_handle,
+.br
+int flags
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_master_handle_t window_handle
+.br
+.in +5
+
+.br
+Window handle allocated by vme_master_window_create(3)
+.
+
+.br
+
+.in
+.br
+
+.B int flags
+.br
+.in +5
+
+.br
+No flags are currently defined for this parameter; use 0.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Maps the VMEbus Master Window to local memory. During the mapping a master window is selected in the Universe II. The same window may be used by several processes.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+Pointer to mapped region on success, or NULL on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_master_window_create(3), vme_master_window_phys_addr(3), vme_master_window_release(3), vme_master_window_translate(3), vme_master_window_unmap(3)
+.br

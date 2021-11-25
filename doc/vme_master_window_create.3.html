@@ -1,0 +1,82 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_master_window_create.3</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_master_window_create</b> - Allocates a VMEbus Master Window handle.
+</p>
+<h2>SYNOPSIS</h2>
+<b>int vme_master_window_create
+(
+vme_bus_handle_t bus_handle, vme_master_handle_t * window_handle, uint64_t vme_addr, int am, size_t size, int flags, void * phys_addr
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b>vme_bus_handle_t bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_init.3.html">vme_init</a>.
+</p></dd>
+<dt><b>vme_master_handle_t * window_handle</b></dt>
+<dd><p>Pointer to the window handle to allocate.
+</p></dd>
+<dt><b>uint64_t vme_addr</b></dt>
+<dd><p>VMEbus address.
+</p></dd>
+<dt><b>int am</b></dt>
+<dd>
+<p>VMEbus address modifier. Valid values are:
+</p>
+- VME_A16S - Short supervisory access.<br>
+- VME_A16U - Short nonprivileged access<br>
+- VME_A24SB - Standard supervisory block transfer<br>
+- VME_A24SD - Standard supervisory data access<br>
+- VME_A24SMB - Standard supervisory multiplex block transfer<br>
+- VME_A24SP - Standard supervisory program access<br>
+- VME_A24UB - Standard nonprivileged block transfer<br>
+- VME_A24UD - Standard nonprivileged data access<br>
+- VME_A24UMB - Standard nonprivileged multiplex block transfer<br>
+- VME_A24UP - Standard nonprivileged program access<br>
+- VME_A32SB - Extended supervisory block transfer<br>
+- VME_A32SD - Extended supervisory data access<br>
+- VME_A32SMB - Extended supervisory multiplex block transfer<br>
+- VME_A32SP - Extended supervisory program access<br>
+- VME_A32UB - Extended nonprivileged block transfer<br>
+- VME_A32UD - Extended nonprivileged data access<br>
+- VME_A32UMB - Extended nonprivileged multiplex block transfer<br>
+- VME_A32UP - Extended nonprivileged program access<br>
+</dd>
+<dt><b>size_t size</b></dt>
+<dd><p>Minimum size of the window in bytes.
+</p></dd>
+<dt><b>int flags</b></dt>
+<dd>
+<p>Flags indicating special window features. A value of 0 indicates that driver default values will be used. If a value is specified, it must be a bitwise "OR" of the following values for the Tundra Universe II device.
+</p>
+- VME_CTL_PWEN - Enable posted writes<br><p>One of the following values for max data width can be used. If a value is not specifed, a default max data width is selected.
+</p>
+- VME_CTL_MAX_DW_8<br>
+- VME_CTL_MAX_DW_16<br>
+- VME_CTL_MAX_DW_32<br>
+- VME_CTL_MAX_DW_64<br><p>Memory space option.
+</p>
+- VME_CTL_PCI_IO_SPACE - Open the window to PCI I/O space (default is memory space).NOt applicable with Solaris.<br>
+</dd>
+<dt><b>void * phys_addr</b></dt>
+<dd><p>Specifies the local physical address to which the VMEbus window should translate. If NULL, the driver attempts to find a valid space. Not applicable with Solaris.
+</p></dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Allocates a VMEbus Master Window handle and set up the control mode for the window to be mapped.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>0 on success, or -1 on failure.
+</p>
+</p>
+<h2>NOTES</h2>
+<p>Not all max data widths are available for all address modifiers. The default max data width is the maximum width available for the given address modifier.
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_master_window_map.3.html">vme_master_window_map</a>(3), <a href="vme_master_window_phys_addr.3.html">vme_master_window_phys_addr</a>(3), <a href="vme_master_window_release.3.html">vme_master_window_release</a>(3), <a href="vme_master_window_translate.3.html">vme_master_window_translate</a>(3), <a href="vme_master_window_unmap.3.html">vme_master_window_unmap</a>(3)</body>
+</html>

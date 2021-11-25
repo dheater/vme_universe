@@ -1,0 +1,31 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_endian.1</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_endian</b> - Displays or changes configuration of the hardware endian conversion feature.
+</p>
+<h2>SYNOPSIS</h2>vme_endian [-b value] [-m value] [-s value]<h2>OPTIONS</h2>
+<dl>
+<dt><b>-b value</b></dt>
+<dd>
+<p>Sets the endian conversion bypass. A value of 1 bypasses the endian conversion. A value of 0 enables endian conversion.
+</p>
+</dd>
+<dt><b>-m value</b></dt>
+<dd>
+<p>Sets the master endian conversion enable. A value of 1 enables Master Window endian conversion. A value of 0 disables Master Window endian conversion.
+</p>
+</dd>
+<dt><b>-s value</b></dt>
+<dd>
+<p>Sets the slave endian conversion enable. A value of 1 enables Slave Window endian conversion. A value of 0 disables Slave Window endian conversion.</p>
+</dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Displays or changes configuration of the hardware endian conversion feature. If no arguments are specified, the current configuration is printed. If -b, -m, or -s is specified along with a value 0 or 1, that feature is turned off or on.
+</p>
+</body>
+</html>

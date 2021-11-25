@@ -1,0 +1,54 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_read_modify_write.3</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_read_modify_write</b> - Performs a read/modify/write cycle on the VMEbus.
+</p>
+<h2>SYNOPSIS</h2>
+<b>int vme_read_modify_write
+(
+vme_bus_handle_t bus_handle, vme_master_handle_t window_handle, size_t offset, int dw, uint64_t mask, uint64_t cmp, uint64_t swap
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b>vme_bus_handle_t bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_init.3.html">vme_init</a>.
+</p></dd>
+<dt><b>vme_master_handle_t window_handle</b></dt>
+<dd><p>Window handle allocated by <a href="vme_master_window_create.3.html">vme_master_window_create</a>.
+</p></dd>
+<dt><b>size_t offset</b></dt>
+<dd><p>Offset from the window base.
+</p></dd>
+<dt><b>int dw</b></dt>
+<dd>
+<p>Access data width. Possbile values are:
+</p>
+- VME_D8<br>
+- VME_D16<br>
+- VME_D32<br>
+</dd>
+<dt><b>uint64_t mask</b></dt>
+<dd><p>Mask of bits to be compared.
+</p></dd>
+<dt><b>uint64_t cmp</b></dt>
+<dd><p>Bit value to compare the read value against.
+</p></dd>
+<dt><b>uint64_t swap</b></dt>
+<dd><p>Bit values to write to bits that compared true.
+</p></dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Performs a read/modify/write cycle on the VMEbus. The cycle is performed by reading a value from the VMEbus and bitwise-comparing the masked values (true/false) with the contents of cmp. All true bits are swapped with the contents of the swap register.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>0 on success, or -1 on failure.
+</p>
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_master_window_create.3.html">vme_master_window_create</a>(3), <a href="vme_master_window_release.3.html">vme_master_window_release</a>(3)</body>
+</html>

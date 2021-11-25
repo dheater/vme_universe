@@ -1,0 +1,67 @@
+
+.TH "vme_master_window_phys_addr" 3
+
+.SH "NAME"
+vme_master_window_phys_addr - Returns the requested VME physical address. Not meaninful with Solaris.
+
+
+.SH "SYNOPSIS"
+void * vme_master_window_phys_addr
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_master_handle_t window_handle
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_master_handle_t window_handle
+.br
+.in +5
+
+.br
+Window handle allocated by vme_master_window_create(3)
+.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Returns the physical address of the VMEbus Master Window.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+The physical address used to access the VMEbus region requested on success, or NULL on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_master_window_create(3), vme_master_window_map(3), vme_master_window_release(3), vme_master_window_translate(3), vme_master_window_unmap(3)
+.br

@@ -1,0 +1,34 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_dma_buffer_release.3</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_dma_buffer_release</b> - Frees a DMA buffer and its associated handle.
+</p>
+<h2>SYNOPSIS</h2>
+<b>int vme_dma_buffer_release
+(
+vme_bus_handle_t bus_handle, vme_dma_handle_t handle
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b>vme_bus_handle_t bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_master_init.3.html">vme_master_init</a>.
+</p></dd>
+<dt><b>vme_dma_handle_t handle</b></dt>
+<dd><p>Handle to a buffer allocated by <a href="vme_dma_buffer_create.3.html">vme_dma_buffer_create</a>.
+</p></dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Free a DMA buffer and its associated handle.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>0 on success, or -1 on failure.
+</p>
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_dma_buffer_create.3.html">vme_dma_buffer_create</a>(3), <a href="vme_dma_buffer_map.3.html">vme_dma_buffer_map</a>(3), <a href="vme_dma_buffer_phys_addr.3.html">vme_dma_buffer_phys_addr</a>(3), <a href="vme_dma_buffer_unmap.3.html">vme_dma_buffer_unmap</a>(3), <a href="vme_dma_read.3.html">vme_dma_read</a>(3), <a href="vme_dma_write.3.html">vme_dma_write</a>(3)</body>
+</html>

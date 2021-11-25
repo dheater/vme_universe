@@ -1,0 +1,52 @@
+
+.TH "vme_term" 3
+
+.SH "NAME"
+vme_term - Releases the VMEbus driver interface.
+
+
+.SH "SYNOPSIS"
+int vme_term
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Releases the VMEbus driver interface.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+Returns 0 on success or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_init(3)
+.br

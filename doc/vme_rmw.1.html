@@ -1,0 +1,95 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_rmw.1</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_rmw</b> - Performs a VMEbus read/modify/write cycle.
+</p>
+<h2>SYNOPSIS</h2>vme_rmw [-a addr_mod] [-A vme_addr] [-d dwidth] [-f flags]<h2>OPTIONS</h2>
+<dl>
+<dt><b>-a addr_mod</b></dt>
+<dd>
+<p>VMEbus address modifer. Possible values are:</p>
+
+- VME_A16S - Short supervisory access.<br>
+
+- VME_A16U - Short nonprivileged access<br>
+
+- VME_A24SB - Standard supervisory block transfer<br>
+
+- VME_A24SD - Standard supervisory data access<br>
+
+- VME_A24SP - Standard supervisory program access<br>
+
+- VME_A24UB - Standard nonprivileged block transfer<br>
+
+- VME_A24UD - Standard nonprivileged data access<br>
+
+- VME_A24UP - Standard nonprivileged program access<br>
+
+- VME_A32SB - Extended supervisory block transfer<br>
+
+- VME_A32SD - Extended supervisory data access<br>
+
+- VME_A32SP - Extended supervisory program access<br>
+
+- VME_A32UB - Extended nonprivileged block transfer<br>
+
+- VME_A32UD - Extended nonprivileged data access<br>
+
+- VME_A32UP - Extended nonprivileged program access<br>
+</dd>
+<dt><b>-A vme_addr</b></dt>
+<dd>
+<p>VMEbus address to begin transfer.</p>
+</dd>
+<dt><b>-d dwidth</b></dt>
+<dd>
+<p>Transfer data width. Possible values are:</p>
+
+- VME_D8<br>
+
+- VME_D16<br>
+
+- VME_D32<br>
+</dd>
+<dt><b>-f flags</b></dt>
+<dd>
+<p>Flags to pass to the <a href="vme_master_window_create.3.html">vme_master_window_create</a> function. The following constants may be OR'ed together:
+</p>
+
+- VME_CTL_PWEN - Enable posted writes.<br>
+
+- VME_CTL_EXCLUSIVE - This window will not be shared.<br>
+<p>One of the following values for max data width can be used. If a value is not specifed, a default max data width is selected.</p>
+
+- VME_CTL_MAX_DW_64<br>
+
+- VME_CTL_MAX_DW_32<br>
+
+- VME_CTL_MAX_DW_16<br>
+
+- VME_CTL_MAX_DW_8<br>
+
+- VME_CTL_PCI_IO_SPACE - Open the window to PCI I/O space.<br>
+</dd>
+</dl>
+<h2>PARAMETERS</h2>
+<dl>
+<dt><b> mask</b></dt>
+<dd><p>Mask of bits to compare.
+</p></dd>
+<dt><b> cmp</b></dt>
+<dd><p>Bit value against which the read value is compared.
+</p></dd>
+<dt><b> swap</b></dt>
+<dd><p>Bit values to write to bits that compare true.
+</p></dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Performs a VMEbus read/modify/write cycle. The cycle is performed by reading a value from the VMEbus and bitwise-comparing masked values (true/false) with the contents of cmp. All true bits are swapped with the contents of the swap register.
+</p>
+</body>
+</html>

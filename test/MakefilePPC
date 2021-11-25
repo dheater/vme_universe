@@ -1,0 +1,56 @@
+ARCH         := ppc
+ROOTDIR	      = /home/7050/linux-2.4.26/
+HPATH         = $(VMIINCPATH)
+HOSTCC        = gcc
+CROSS_COMPILE = powerpc-linux-
+CC            = $(CROSS_COMPILE)gcc
+LD            = $(CROSS_COMPILE)ld
+LIBNAME	      = libvme.so
+LDFLAGS	      = -L$(VMILIBPATH) -lvme
+
+export	ARCH ROOTDIR HPATH INCVME HOSTCC CROSS_COMPILE CC 
+
+CURPTH = $(shell /bin/pwd)
+
+.PHONY: all clean
+
+UTILITIES :=	vme_peek \
+		vme_poke \
+		vme_slave_peek \
+		vme_slave_poke \
+		vme_catch_interrupt \
+		vme_generate_interrupt \
+		vme_dma_read \
+		vme_dma_write \
+		vme_sysreset \
+		vme_acquire_bus \
+		vme_release_bus \
+		vme_endian \
+		vme_rmw 
+	
+UTIL_OBJS :=	vme_peek.o \
+		vme_poke.o \
+		vme_slave_peek.o \
+		vme_slave_poke.o \
+		vme_catch_interrupt.o \
+		vme_generate_interrupt.o \
+		vme_dma_read.o \
+		vme_dma_write.o \
+		vme_sysreset.o \
+		vme_acquire_bus.o \
+		vme_release_bus.o \
+		vme_endian.o \
+		vme_rmw.o 
+
+all: $(UTILITIES)
+	
+$(UTILITIES):CFLAGS+=-O2 -I$(VMIINCPATH)
+$(UTILITIES): %: %.c vme_test.o $(VMILIBPATH)/$(LIBNAME).$(MOD_MAJOR).$(MOD_MINOR)
+	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@ vme_test.o
+
+vme_test.o: vme_test.c vme_test.h ../include/vme/vme.h \
+	../include/vme/universe.h ../include/vme/vme_api.h
+	$(CC) -I$(VMIINCPATH) -c $< -o $@
+	
+clean:
+	find . -name "*\.o" | xargs rm -f

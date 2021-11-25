@@ -1,0 +1,92 @@
+TOPDIR        :=/home/7050/linux-2.4.26
+ARCH          := ppc 
+CROSS_COMPILE := powerpc-linux-
+
+#-------------------------------------------------------------
+# Compilation Tools
+#-------------------------------------------------------------
+AS              = $(CROSS_COMPILE)as
+LD              = $(CROSS_COMPILE)ld
+CC              = $(CROSS_COMPILE)gcc
+CPP             = $(CC) -E
+AR              = $(CROSS_COMPILE)ar
+NM              = $(CROSS_COMPILE)nm
+STRIP           = $(CROSS_COMPILE)strip
+OBJCOPY         = $(CROSS_COMPILE)objcopy
+OBJDUMP         = $(CROSS_COMPILE)objdump
+MAKEFILES       = $(TOPDIR)/.config
+
+
+#-------------------------------------------------------------
+# Object files
+#-------------------------------------------------------------
+DRIVER_MODULE  := $(PROJNAME).o 
+
+DRIVER_OBJ     := hw_diag.o \
+		  vme_main.o \
+		  vme_master.o \
+		  vme_slave.o \
+		  vme_dma.o \
+		  vme_interrupt.o \
+		  universe.o \
+		  vme_ctl.o \
+		  vme_vrai.o \
+		  vme_location_monitor.o \
+		  vmivme.o \
+
+TARGET_MODULE := $(DRIVER_MODULE)
+
+#-------------------------------------------------------------
+# Compilation flags
+#-------------------------------------------------------------
+INCLUDES := -I$(TOPDIR)/include -I../include -I.
+CFLAGS := -D__KERNEL__ -DMODULE -O2 -Wall $(INCLUDES) 
+CFLAGS := $(CFLAGS) -DARCH -DMODVERSIONS
+
+LOC_DEFS=
+CFLAGS := $(CFLAGS) $(LOC_DEFS) -DVME_UNIVERSE_VERSION=\"$(MOD_VERSION)\"
+CFLAGS := $(CFLAGS)  -DEXPORT_SYMTAB 
+EXTRA_CFLAGS := -DDEBUG
+
+#------------------------------------------------------------
+# Common rules
+#------------------------------------------------------------
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -c -o $@ $<
+
+%_d.o: %.c
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -g -DJT_DEBUG -c -o $@ $<
+
+#------------------------------------------------------------
+# Default target
+#------------------------------------------------------------
+.PHONY: all
+all: $(DRIVER_MODULE) $(DEBUG_MODULE)
+
+#------------------------------------------------------------
+# Include dependency files they exist
+#------------------------------------------------------------
+ifeq (.depend,$(wildcard .depend))
+include .depend
+endif
+
+#------------------------------------------------------------
+# Targets
+#------------------------------------------------------------
+
+# Target to make the plain driver
+$(DRIVER_MODULE) : $(DRIVER_OBJ)
+	$(LD) -r $(DRIVER_OBJ) -o $@ $(LDFLAGS)
+#	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -c $< #-c -o $@ $<
+#	$(LD) -r $(DRIVER_OBJ) -o $@ $(LDFLAGS)
+
+# Remove all temporary and generated files
+.PHONY: clean
+clean:
+	rm -f core *.o *.a *.s *.lst
+
+# Converts the source files from Windows
+.PHONY: convert
+convert:
+	dos2unix *.c makefile

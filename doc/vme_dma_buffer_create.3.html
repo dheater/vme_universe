@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_dma_buffer_create.3</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_dma_buffer_create</b> - Allocates a DMA safe memory buffer and an associated handle.
+</p>
+<h2>SYNOPSIS</h2>
+<b>int vme_dma_buffer_create
+(
+ bus_handle, vme_dma_handle_t * handle, size_t size, int flags, void * phys_addr
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b> bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_master_init.3.html">vme_master_init</a>.
+</p></dd>
+<dt><b>vme_dma_handle_t * handle</b></dt>
+<dd><p>Pointer to the DMA buffer handle to allocate.
+</p></dd>
+<dt><b>size_t size</b></dt>
+<dd><p>Minimum size of the window, in bytes.
+</p></dd>
+<dt><b>int flags</b></dt>
+<dd><p>No flags are currently defined for this parameter; use 0.
+</p></dd>
+<dt><b>void * phys_addr</b></dt>
+<dd><p>Specifies the physical address of a DMA buffer. If NULL, space is automatically allocated.
+</p></dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Allocates a DMA safe memory buffer and an associated handle.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>0 on success, or -1 on failure.
+</p>
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_dma_buffer_map.3.html">vme_dma_buffer_map</a>(3), <a href="vme_dma_buffer_phys_addr.3.html">vme_dma_buffer_phys_addr</a>(3), <a href="vme_dma_buffer_release.3.html">vme_dma_buffer_release</a>(3), <a href="vme_dma_buffer_unmap.3.html">vme_dma_buffer_unmap</a>(3), <a href="vme_dma_read.3.html">vme_dma_read</a>(3), <a href="vme_dma_write.3.html">vme_dma_write</a>(3)</body>
+</html>

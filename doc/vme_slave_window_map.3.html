@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_slave_window_map.3</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_slave_window_map</b> - Maps the VMEbus Slave Window to user space.
+</p>
+<h2>SYNOPSIS</h2>
+<b>void * vme_slave_window_map
+(
+vme_bus_handle_t bus_handle, vme_slave_handle_t window_handle, int flags
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b>vme_bus_handle_t bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_init.3.html">vme_init</a>.
+</p></dd>
+<dt><b>vme_slave_handle_t window_handle</b></dt>
+<dd><p>Window handle previously allocated by <a href="vme_slave_window_create.3.html">vme_slave_window_create</a>.
+</p></dd>
+<dt><b>int flags</b></dt>
+<dd><p>No flags are currently defined for this parameter; use 0.
+</p></dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Maps the VMEbus Slave Window to user space.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>Pointer to mapped region on success, or NULL on failure.
+</p>
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_slave_window_create.3.html">vme_slave_window_create</a>(3), <a href="vme_slave_window_phys_addr.3.html">vme_slave_window_phys_addr</a>(3), <a href="vme_slave_window_release.3.html">vme_slave_window_release</a>(3), <a href="vme_slave_window_unmap.3.html">vme_slave_window_unmap</a>(3)</body>
+</html>

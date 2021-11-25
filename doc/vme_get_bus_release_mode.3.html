@@ -1,0 +1,38 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_get_bus_release_mode.3</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_get_bus_release_mode</b> - Returns the current VMEbus release mode.
+</p>
+<h2>SYNOPSIS</h2>
+<b>int vme_get_bus_release_mode
+(
+vme_bus_handle_t bus_handle, int * br_mode
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b>vme_bus_handle_t bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_init.3.html">vme_init</a>.
+</p></dd>
+<dt><b>int * br_mode</b></dt>
+<dd>
+<p>Returns the current VMEbus release mode. Valid values are:
+</p>
+- VME_RELEASE_ON_REQUEST<br>
+- VME_RELEASE_WHEN_DONE<br>
+</dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Returns the current VMEbus release mode.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>0 on success, or -1 on failure.
+</p>
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_set_bus_release_mode.3.html">vme_set_bus_release_mode</a>(3)</body>
+</html>

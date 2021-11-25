@@ -1,0 +1,24 @@
+
+.TH "vme_acquire_bus" 1
+
+.SH "NAME"
+vme_acquire_bus - Acquires and holds the VMEbus.
+
+
+.SH "SYNOPSIS"
+vme_acquire_bus
+
+.SH "DESCRIPTION"
+
+.br
+Acquires and holds the VMEbus.
+
+.br
+
+.SH "NOTES"
+VMEbus acquisition and hold is implemented using a counting semaphore. Therefore, for each acquire and hold, there must be a corresponding release. The VMEbus is not released until the counting semaphore reaches 0.
+.br
+
+.SH "SEE ALSO"
+vme_release_bus(1)
+.br

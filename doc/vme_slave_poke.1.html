@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_slave_poke.1</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_slave_poke</b> - Reads data from local slave RAM using memory-mapped registers.
+</p>
+<h2>SYNOPSIS</h2>vme_slave_poke [-a addr_space] [-A vme_addr] [-d dwidth] [-e num_elem] [-f flags] [-F file] [-p phys_addr]<h2>OPTIONS</h2>
+<dl>
+<dt><b>-a addr_space</b></dt>
+<dd>
+<p>VMEbus address space. Possible values are:</p>
+
+- VME_A16 - Short I/O<br>
+
+- VME_A24 - Standard I/O<br>
+
+- VME_A32 - Extended I/O<br>
+</dd>
+<dt><b>-A vme_addr</b></dt>
+<dd>
+<p>Searchs for slave memory mapped to the defined VMEbus address.
+</p>
+</dd>
+<dt><b>-d dwidth</b></dt>
+<dd>
+<p>Transfer data width.  Possible values are:</p>
+
+- VME_D8<br>
+
+- VME_D16<br>
+
+- VME_D32<br>
+
+- VME_D64<br>
+</dd>
+<dt><b>-e num_elem</b></dt>
+<dd>
+<p>Number of data width sized elements to transfer.</p>
+</dd>
+<dt><b>-f flags</b></dt>
+<dd>
+<p>Flags to pass to the <a href="vme_slave_window_create.3.html">vme_slave_window_create</a> function. The following constants may be OR'ed together:
+</p>
+
+- VME_CTL_PWEN - Enables posted writes.<br>
+
+- VME_CTL_PREN - Enables prefetch reads.<br>
+
+- VME_CTL_64_BIT - Enables 64-bit PCI transactions.<br>
+
+- VME_CTL_RMW - Enables a PCI bus lock on VMEbus read-modify-write cycle.<br>
+<p>One of the following address modes can be used. If a mode is not specified, the window responds to accesses in either mode.</p>
+
+- VME_CTL_PROGRAM_ONLY - Responds to program address modifiers only.<br>
+
+- VME_CTL_DATA_ONLY - Responds to data address modifiers only.<br>
+<p>One of the following address privileges can be used. If a mode is not specified, the window responds to accesses in either modes.</p>
+
+- VME_CTL_SUPER_ONLY - Responds to supervisor address modifiers only.<br>
+
+- VME_CTL_USER_ONLY - Responds to user address modifiers only.<br>
+<p>One of the following PCI address spaces can be used. If a flag is not specifed, the window maps to PCI memory space.</p>
+
+- VME_CTL_PCI_CONFIG<br>
+
+- VME_CTL_PCI_IO_SPACE<br>
+
+- VME_CTL_PCI_IO_SPACE - Open the window to PCI I/O space. Not applicable with Solaris.<br>
+</dd>
+<dt><b>-F file</b></dt>
+<dd>
+<p>File containing the hexdata to transfer.
+</p>
+</dd>
+<dt><b>-p phys_addr</b></dt>
+<dd>
+<p>Specifies the local physical address to which the window will translate.
+</p>
+</dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Reads data from local slave RAM using memory-mapped registers.
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_slave_peek.1.html">vme_slave_peek</a>(1)</body>
+</html>

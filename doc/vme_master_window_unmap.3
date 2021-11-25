@@ -1,0 +1,67 @@
+
+.TH "vme_master_window_unmap" 3
+
+.SH "NAME"
+vme_master_window_unmap - Unmaps the VMEbus Master Window.
+
+
+.SH "SYNOPSIS"
+int vme_master_window_unmap
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_master_handle_t window_handle
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_master_handle_t window_handle
+.br
+.in +5
+
+.br
+Window handle allocated by vme_master_window_create(3)
+.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Unmaps the VMEbus Master Window.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_master_window_create(3), vme_master_window_map(3), vme_master_window_phys_addr(3), vme_master_window_release(3), vme_master_window_translate(3)
+.br

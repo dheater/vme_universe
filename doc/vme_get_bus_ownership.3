@@ -1,0 +1,66 @@
+
+.TH "vme_get_bus_ownership" 3
+
+.SH "NAME"
+vme_get_bus_ownership - Returns the current VMEbus ownership status.
+
+
+.SH "SYNOPSIS"
+int vme_get_bus_ownership
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+int * vown
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B int * vown
+.br
+.in +5
+
+.br
+Returns 1 if the VMEbus is owned and held, or 0 if it is free.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Returns the current VMEbus ownership status.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_acquire_bus_ownership(3), vme_release_bus_ownership(3)
+.br

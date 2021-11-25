@@ -1,0 +1,58 @@
+
+.TH "vme_location_monitor_release" 3
+
+.SH "NAME"
+vme_location_monitor_release - Releases the VMEbus register access image.
+
+
+.SH "SYNOPSIS"
+ vme_location_monitor_release
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_lm_handle_t monitor_handle
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_lm_handle_t monitor_handle
+.br
+.in +5
+
+.br
+Window handle allocated by vme_location_monitor_create(3)
+.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Releases the VMEbus register access image.
+
+.br
+
+.SH "SEE ALSO"
+vme_location_monitor_create(3)
+.br

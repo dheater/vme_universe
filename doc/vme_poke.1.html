@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_poke.1</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_poke</b> - Writes hexadecimal values to the VMEbus using memory-mapped registers.
+</p>
+<h2>SYNOPSIS</h2>vme_poke [-a addr_mod] [-A vme_addr] [-d dwidth] [-f flags] [-p phys_addr] [-F file]<h2>OPTIONS</h2>
+<dl>
+<dt><b>-a addr_mod</b></dt>
+<dd>
+<p>VMEbus address modifer. Possible values are:</p>
+
+- VME_A16S - Short supervisory access.<br>
+
+- VME_A16U - Short nonprivileged access<br>
+
+- VME_A24SB - Standard supervisory block transfer<br>
+
+- VME_A24SD - Standard supervisory data access<br>
+
+- VME_A24SMB - Standard supervisory multiplex block transfer<br>
+
+- VME_A24SP - Standard supervisory program access<br>
+
+- VME_A24UB - Standard nonprivileged block transfer<br>
+
+- VME_A24UD - Standard nonprivileged data access<br>
+
+- VME_A24UMB - Standard nonprivileged multiplex block transfer<br>
+
+- VME_A24UP - Standard nonprivileged program access<br>
+
+- VME_A32SB - Extended supervisory block transfer<br>
+
+- VME_A32SD - Extended supervisory data access<br>
+
+- VME_A32SMB - Extended supervisory multiplex block transfer<br>
+
+- VME_A32SP - Extended supervisory program access<br>
+
+- VME_A32UB - Extended nonprivileged block transfer<br>
+
+- VME_A32UD - Extended nonprivileged data access<br>
+
+- VME_A32UMB - Extended nonprivileged multiplex block transfer<br>
+
+- VME_A32UP - Extended nonprivileged program access<br>
+</dd>
+<dt><b>-A vme_addr</b></dt>
+<dd>
+<p>VMEbus address to begin transfer.</p>
+</dd>
+<dt><b>-d dwidth</b></dt>
+<dd>
+<p>Transfer data width.  Possible values are:</p>
+
+- VME_D8<br>
+
+- VME_D16<br>
+
+- VME_D32<br>
+
+- VME_D64<br>
+</dd>
+<dt><b>-f flags</b></dt>
+<dd>
+<p>Flags to pass to the <a href="vme_master_window_create.3.html">vme_master_window_create</a> function. The following constants may be OR'ed together:
+</p>
+
+- VME_CTL_PWEN - Enable posted writes<br>
+
+- VME_CTL_EXCLUSIVE - This window will not be shared<br>
+<p>One of the following values for max data width can be used. If a value is not specifed, a default max data width is selected.</p>
+
+- VME_CTL_MAX_DW_64<br>
+
+- VME_CTL_MAX_DW_32<br>
+
+- VME_CTL_MAX_DW_16<br>
+
+- VME_CTL_MAX_DW_8<br>
+
+- VME_CTL_PCI_IO_SPACE - Open the window to PCI I/O space<br>
+</dd>
+<dt><b>-p phys_addr</b></dt>
+<dd>
+<p>Specifies the local physical address to which the VMEbus window should translate. Not applicable with Solaris.
+</p>
+</dd>
+<dt><b>-F file</b></dt>
+<dd>
+<p>File containing the hexdata to transfer.
+</p>
+</dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Writes hexadecimal values to the VMEbus using memory-mapped registers. Hex values can be input on the command line, read from a file or taken from stdin.
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_peek.1.html">vme_peek</a>(1)</body>
+</html>

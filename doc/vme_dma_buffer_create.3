@@ -1,0 +1,108 @@
+
+.TH "vme_dma_buffer_create" 3
+
+.SH "NAME"
+vme_dma_buffer_create - Allocates a DMA safe memory buffer and an associated handle.
+
+
+.SH "SYNOPSIS"
+int vme_dma_buffer_create
+.br
+(
+.br
+.in +5
+ bus_handle,
+.br
+vme_dma_handle_t * handle,
+.br
+size_t size,
+.br
+int flags,
+.br
+void * phys_addr
+.in
+)
+
+.SH "PARAMETERS"
+
+.B  bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_master_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_dma_handle_t * handle
+.br
+.in +5
+
+.br
+Pointer to the DMA buffer handle to allocate.
+
+.br
+
+.in
+.br
+
+.B size_t size
+.br
+.in +5
+
+.br
+Minimum size of the window, in bytes.
+
+.br
+
+.in
+.br
+
+.B int flags
+.br
+.in +5
+
+.br
+No flags are currently defined for this parameter; use 0.
+
+.br
+
+.in
+.br
+
+.B void * phys_addr
+.br
+.in +5
+
+.br
+Specifies the physical address of a DMA buffer. If NULL, space is automatically allocated.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Allocates a DMA safe memory buffer and an associated handle.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_dma_buffer_map(3), vme_dma_buffer_phys_addr(3), vme_dma_buffer_release(3), vme_dma_buffer_unmap(3), vme_dma_read(3), vme_dma_write(3)
+.br

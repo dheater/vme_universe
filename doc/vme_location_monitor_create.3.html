@@ -1,0 +1,63 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_location_monitor_create.3</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_location_monitor_create</b> - Creates a location monitor image.
+</p>
+<h2>SYNOPSIS</h2>
+<b>int vme_location_monitor_create
+(
+vme_bus_handle_t bus_handle, vme_lm_handle_t * monitor_handle, uint64_t vme_addr, int as, int reserved, int flags
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b>vme_bus_handle_t bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_init.3.html">vme_init</a>.
+</p></dd>
+<dt><b>vme_lm_handle_t * monitor_handle</b></dt>
+<dd><p>Pointer to the location monitor handle to allocate.
+</p></dd>
+<dt><b>uint64_t vme_addr</b></dt>
+<dd><p>VMEbus address.
+</p></dd>
+<dt><b>int as</b></dt>
+<dd>
+<p>VMEbus address space. Valid values are:
+</p>
+- VME_A32<br>
+- VME_A24<br>
+- VME_A16<br>
+</dd>
+<dt><b>int reserved</b></dt>
+<dd><p>Reserved for future use.
+</p></dd>
+<dt><b>int flags</b></dt>
+<dd>
+<p>Flags indicating special window features. A value of 0 indicates that driver default values will be used.  If a value is specified, it must be a bitwise "OR" of the following values for the Tundra Universe II device.
+</p>
+<p>One of the following address modes can be used. If a mode is not specified, the window responds to accesses in either mode.
+</p>
+- VME_CTL_PROGRAM_ONLY - Respond to program address modifiers only.<br>
+- VME_CTL_DATA_ONLY - Respond to data address modifiers only.<br><p>One of the following address privileges can be used. If a privledge is not specified, the window responds to accesses of either privledge.
+</p>
+- VME_CTL_SUPER_ONLY - Respond to supervisor address modifiers only.<br>
+- VME_CTL_USER_ONLY - Respond to user address modifiers only.<br>
+</dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Creates a location monitor image.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>0 on success or -1 on failure
+</p>
+</p>
+<h2>NOTES</h2>
+<p>Only one location monitor image can exist at any time.
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_location_monitor_release.3.html">vme_location_monitor_release</a>(3)</body>
+</html>

@@ -1,0 +1,209 @@
+
+.TH "vme_slave_poke" 1
+
+.SH "NAME"
+vme_slave_poke - Reads data from local slave RAM using memory-mapped registers.
+
+
+.SH "SYNOPSIS"
+vme_slave_poke [-a addr_space] [-A vme_addr] [-d dwidth] [-e num_elem] [-f flags] [-F file] [-p phys_addr]
+.SH "OPTIONS"
+
+.B -a addr_space
+.in +5
+
+
+.br
+VMEbus address space. Possible values are:
+.br
+
+
+.nf
+- VME_A16 - Short I/O
+.fi
+
+
+.nf
+- VME_A24 - Standard I/O
+.fi
+
+
+.nf
+- VME_A32 - Extended I/O
+.fi
+
+
+.in
+
+.B -A vme_addr
+.in +5
+
+
+.br
+Searchs for slave memory mapped to the defined VMEbus address.
+
+.br
+
+
+.in
+
+.B -d dwidth
+.in +5
+
+
+.br
+Transfer data width.  Possible values are:
+.br
+
+
+.nf
+- VME_D8
+.fi
+
+
+.nf
+- VME_D16
+.fi
+
+
+.nf
+- VME_D32
+.fi
+
+
+.nf
+- VME_D64
+.fi
+
+
+.in
+
+.B -e num_elem
+.in +5
+
+
+.br
+Number of data width sized elements to transfer.
+.br
+
+
+.in
+
+.B -f flags
+.in +5
+
+
+.br
+Flags to pass to the vme_slave_window_create(3)
+ function. The following constants may be OR'ed together:
+
+.br
+
+
+.nf
+- VME_CTL_PWEN - Enables posted writes.
+.fi
+
+
+.nf
+- VME_CTL_PREN - Enables prefetch reads.
+.fi
+
+
+.nf
+- VME_CTL_64_BIT - Enables 64-bit PCI transactions.
+.fi
+
+
+.nf
+- VME_CTL_RMW - Enables a PCI bus lock on VMEbus read-modify-write cycle.
+.fi
+
+
+.br
+One of the following address modes can be used. If a mode is not specified, the window responds to accesses in either mode.
+.br
+
+
+.nf
+- VME_CTL_PROGRAM_ONLY - Responds to program address modifiers only.
+.fi
+
+
+.nf
+- VME_CTL_DATA_ONLY - Responds to data address modifiers only.
+.fi
+
+
+.br
+One of the following address privileges can be used. If a mode is not specified, the window responds to accesses in either modes.
+.br
+
+
+.nf
+- VME_CTL_SUPER_ONLY - Responds to supervisor address modifiers only.
+.fi
+
+
+.nf
+- VME_CTL_USER_ONLY - Responds to user address modifiers only.
+.fi
+
+
+.br
+One of the following PCI address spaces can be used. If a flag is not specifed, the window maps to PCI memory space.
+.br
+
+
+.nf
+- VME_CTL_PCI_CONFIG
+.fi
+
+
+.nf
+- VME_CTL_PCI_IO_SPACE
+.fi
+
+
+.nf
+- VME_CTL_PCI_IO_SPACE - Open the window to PCI I/O space. Not applicable with Solaris.
+.fi
+
+
+.in
+
+.B -F file
+.in +5
+
+
+.br
+File containing the hexdata to transfer.
+
+.br
+
+
+.in
+
+.B -p phys_addr
+.in +5
+
+
+.br
+Specifies the local physical address to which the window will translate.
+
+.br
+
+
+.in
+
+
+.SH "DESCRIPTION"
+
+.br
+Reads data from local slave RAM using memory-mapped registers.
+
+.br
+
+.SH "SEE ALSO"
+vme_slave_peek(1)
+.br

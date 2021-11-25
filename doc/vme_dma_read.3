@@ -1,0 +1,319 @@
+
+.TH "vme_dma_read" 3
+
+.SH "NAME"
+vme_dma_read - Reads data from the VMEbus using DMA or programmed I/O.
+
+
+.SH "SYNOPSIS"
+int vme_dma_read
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_dma_handle_t dma_handle,
+.br
+unsigned long offset,
+.br
+uint64_t vme_addr,
+.br
+int am,
+.br
+size_t nbytes,
+.br
+int flags
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_master_init(3)
+
+
+.br
+
+.in
+.br
+
+.B vme_dma_handle_t dma_handle
+.br
+.in +5
+
+.br
+Handle to a DMA buffer allocated by vme_dma_buffer_create(3)
+.
+
+.br
+
+.in
+.br
+
+.B unsigned long offset
+.br
+.in +5
+
+.br
+Offset from the buffer base address. The first byte of data read is stored at this address.
+
+.br
+
+.in
+.br
+
+.B uint64_t vme_addr
+.br
+.in +5
+
+.br
+VMEbus address.
+
+.br
+
+.in
+.br
+
+.B int am
+.br
+.in +5
+
+.br
+Address modifier. Possible values are:
+.br
+
+.nf
+- VME_A16S - Short supervisory access.
+.fi
+
+.nf
+- VME_A16U - Short nonprivileged access
+.fi
+
+.nf
+- VME_A24SB - Standard supervisory block transfer
+.fi
+
+.nf
+- VME_A24SD - Standard supervisory data access
+.fi
+
+.nf
+- VME_A24SMB - Standard supervisory multiplex block transfer
+.fi
+
+.nf
+- VME_A24SP - Standard supervisory program access
+.fi
+
+.nf
+- VME_A24UB - Standard nonprivileged block transfer
+.fi
+
+.nf
+- VME_A24UD - Standard nonprivileged data access
+.fi
+
+.nf
+- VME_A24UMB - Standard nonprivileged multiplex block transfer
+.fi
+
+.nf
+- VME_A24UP - Standard nonprivileged program access
+.fi
+
+.nf
+- VME_A32SB - Extended supervisory block transfer
+.fi
+
+.nf
+- VME_A32SD - Extended supervisory data access
+.fi
+
+.nf
+- VME_A32SMB - Extended supervisory multiplex block transfer
+.fi
+
+.nf
+- VME_A32SP - Extended supervisory program access
+.fi
+
+.nf
+- VME_A32UB - Extended nonprivileged block transfer
+.fi
+
+.nf
+- VME_A32UD - Extended nonprivileged data access
+.fi
+
+.nf
+- VME_A32UMB - Extended nonprivileged multiplex block transfer
+.fi
+
+.nf
+- VME_A32UP - Extended nonprivileged program access
+.fi
+
+.in
+.br
+
+.B size_t nbytes
+.br
+.in +5
+
+.br
+Number of bytes of data to transfer.
+
+.br
+
+.in
+.br
+
+.B int flags
+.br
+.in +5
+
+.br
+Flags used to indicate special transfer features. The value specified will be an "OR" of the following possible values for the Tundra Universe II device.
+
+.br
+
+.nf
+- VME_DMA_64_BIT - Enable 64-bit PCI bus transfers
+.fi
+
+.br
+One of the following data widths can be used. If a data width is not specified, a default value is chosen based on the address modifier:
+
+.br
+
+.nf
+- VME_DMA_DW_8
+.fi
+
+.nf
+- VME_DMA_DW_16
+.fi
+
+.nf
+- VME_DMA_DW_32
+.fi
+
+.nf
+- VME_DMA_DW_64
+.fi
+
+.br
+One of the following settings of the VON counter can be used, to indicates how many bytes of data to transfer before the bus is released. If a flag is not specified, the bus is held until the transfer completes.
+
+.br
+
+.nf
+- VME_DMA_VON_256
+.fi
+
+.nf
+- VME_DMA_VON_512
+.fi
+
+.nf
+- VME_DMA_VON_1024
+.fi
+
+.nf
+- VME_DMA_VON_2048
+.fi
+
+.nf
+- VME_DMA_VON_4096
+.fi
+
+.nf
+- VME_DMA_VON_8192
+.fi
+
+.nf
+- VME_DMA_VON_16384
+.fi
+
+.br
+One of the following settings of the VOFF counter can be used, to indicates how many microseconds to wait before reaquiring the bus. If a flag is not specified, the bus is immediately re-requested.
+
+.br
+
+.nf
+- VME_DMA_VOFF_16
+.fi
+
+.nf
+- VME_DMA_VOFF_32
+.fi
+
+.nf
+- VME_DMA_VOFF_64
+.fi
+
+.nf
+- VME_DMA_VOFF_128
+.fi
+
+.nf
+- VME_DMA_VOFF_256
+.fi
+
+.nf
+- VME_DMA_VOFF_512
+.fi
+
+.nf
+- VME_DMA_VOFF_1024
+.fi
+
+.nf
+- VME_DMA_VOFF_2000
+.fi
+
+.nf
+- VME_DMA_VOFF_4000
+.fi
+
+.nf
+- VME_DMA_VOFF_8000
+.fi
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Reads data from the VMEbus using DMA or programmed I/O. The DMA engine is used to read data from the VMEbus into a specified DMA buffer. If the addresses have not the same alignement, programmed I/O is used.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "NOTES"
+Not all max data widths are available for all address modifiers.
+
+.br
+The default max data width is the maximum available width for the given address modifier.
+
+.br
+
+.SH "SEE ALSO"
+vme_dma_buffer_create(3), vme_dma_buffer_map(3), vme_dma_buffer_phys_addr(3), vme_dma_buffer_release(3), vme_dma_buffer_unmap(3), vme_dma_write(3)
+.br

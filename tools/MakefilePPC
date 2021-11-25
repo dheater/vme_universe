@@ -1,0 +1,38 @@
+ARCH         := ppc
+ROOTDIR       = /home/7050/linux-2.4.26/
+HPATH         = $(VMIINCPATH)
+HOSTCC        = gcc
+CROSS_COMPILE = powerpc-linux-
+CC            = $(CROSS_COMPILE)gcc
+LD            = $(CROSS_COMPILE)ld
+LIBNAME	      = libvme.so
+LDFLAGS	      = -L$(VMILIBPATH) -lvme
+
+export	ARCH ROOTDIR HPATH INCVME HOSTCC CROSS_COMPILE CC 
+
+CURPTH = $(shell /bin/pwd)
+
+%.o: %.c
+	$(CC) -I$(HPATH) -I$(INCVME) -c -o $@ $<
+
+.PHONY: all clean
+
+UTILITIES := 	catch_berr \
+		dma_read \
+		get_lm \
+		get_mailbox \
+		hello_vme \
+		peek \
+		peek_slv32 \
+		poke \
+		slave_peek \
+		slv_create16 \
+		slv_create32 \
+		slv_create
+
+all: $(UTILITIES)
+
+$(UTILITIES):CFLAGS+=-O2 -I$(VMIINCPATH)
+
+clean:
+	find . -name "*\.o" | xargs rm -f

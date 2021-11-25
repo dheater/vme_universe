@@ -1,0 +1,52 @@
+
+.TH "vme_release_bus_ownership" 3
+
+.SH "NAME"
+vme_release_bus_ownership - Relinquishes ownership of the VMEbus.
+
+
+.SH "SYNOPSIS"
+int vme_release_bus_ownership
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Relinquishes ownership of the VMEbus.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_acquire_bus_ownership(3), vme_get_bus_ownership(3)
+.br

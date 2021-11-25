@@ -1,0 +1,229 @@
+
+.TH "vme_rmw" 1
+
+.SH "NAME"
+vme_rmw - Performs a VMEbus read/modify/write cycle.
+
+
+.SH "SYNOPSIS"
+vme_rmw [-a addr_mod] [-A vme_addr] [-d dwidth] [-f flags] mask cmp swap
+.SH "OPTIONS"
+
+.B -a addr_mod
+.in +5
+
+
+.br
+VMEbus address modifer. Possible values are:
+.br
+
+
+.nf
+- VME_A16S - Short supervisory access.
+.fi
+
+
+.nf
+- VME_A16U - Short nonprivileged access
+.fi
+
+
+.nf
+- VME_A24SB - Standard supervisory block transfer
+.fi
+
+
+.nf
+- VME_A24SD - Standard supervisory data access
+.fi
+
+
+.nf
+- VME_A24SP - Standard supervisory program access
+.fi
+
+
+.nf
+- VME_A24UB - Standard nonprivileged block transfer
+.fi
+
+
+.nf
+- VME_A24UD - Standard nonprivileged data access
+.fi
+
+
+.nf
+- VME_A24UP - Standard nonprivileged program access
+.fi
+
+
+.nf
+- VME_A32SB - Extended supervisory block transfer
+.fi
+
+
+.nf
+- VME_A32SD - Extended supervisory data access
+.fi
+
+
+.nf
+- VME_A32SP - Extended supervisory program access
+.fi
+
+
+.nf
+- VME_A32UB - Extended nonprivileged block transfer
+.fi
+
+
+.nf
+- VME_A32UD - Extended nonprivileged data access
+.fi
+
+
+.nf
+- VME_A32UP - Extended nonprivileged program access
+.fi
+
+
+.in
+
+.B -A vme_addr
+.in +5
+
+
+.br
+VMEbus address to begin transfer.
+.br
+
+
+.in
+
+.B -d dwidth
+.in +5
+
+
+.br
+Transfer data width. Possible values are:
+.br
+
+
+.nf
+- VME_D8
+.fi
+
+
+.nf
+- VME_D16
+.fi
+
+
+.nf
+- VME_D32
+.fi
+
+
+.in
+
+.B -f flags
+.in +5
+
+
+.br
+Flags to pass to the vme_master_window_create(3)
+ function. The following constants may be OR'ed together:
+
+.br
+
+
+.nf
+- VME_CTL_PWEN - Enable posted writes.
+.fi
+
+
+.nf
+- VME_CTL_EXCLUSIVE - This window will not be shared.
+.fi
+
+
+.br
+One of the following values for max data width can be used. If a value is not specifed, a default max data width is selected.
+.br
+
+
+.nf
+- VME_CTL_MAX_DW_64
+.fi
+
+
+.nf
+- VME_CTL_MAX_DW_32
+.fi
+
+
+.nf
+- VME_CTL_MAX_DW_16
+.fi
+
+
+.nf
+- VME_CTL_MAX_DW_8
+.fi
+
+
+.nf
+- VME_CTL_PCI_IO_SPACE - Open the window to PCI I/O space.
+.fi
+
+
+.in
+
+.SH "PARAMETERS"
+
+.B  mask
+.br
+.in +5
+
+.br
+Mask of bits to compare.
+
+.br
+
+.in
+.br
+
+.B  cmp
+.br
+.in +5
+
+.br
+Bit value against which the read value is compared.
+
+.br
+
+.in
+.br
+
+.B  swap
+.br
+.in +5
+
+.br
+Bit values to write to bits that compare true.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Performs a VMEbus read/modify/write cycle. The cycle is performed by reading a value from the VMEbus and bitwise-comparing masked values (true/false) with the contents of cmp. All true bits are swapped with the contents of the swap register.
+
+.br
+
+.br

@@ -1,0 +1,129 @@
+#
+#==============================================================================
+#                           COPYRIGHT NOTICE
+#
+#   Copyright (C) 2002-2003 GE Fanuc
+#   International Copyright Secured.  All Rights Reserved.
+#
+#------------------------------------------------------------------------------
+#   Description: Makefile for the GE Fanuc VMEbus driver module (2.4 kernel)
+#------------------------------------------------------------------------------
+#
+#==============================================================================
+#
+
+
+# Project variables
+# 'uname -r' sets kernel revision to the currently running kernel revision
+# KERNELSRC must point to the Linux kernel source code.
+KERNELREV:=$(shell uname -r)
+KERNELSRC:=/lib/modules/$(KERNELREV)/build
+LIBNAME:=libvme.so
+DEVDIR:=/dev/bus/vme
+FIXUPFLAGS:=$(shell ../fixupflags.sh)
+
+# The standard tools and options
+CC:=gcc
+CFLAGS=-I../include -Wall
+LD:=ld
+LDFLAGS=
+
+
+# Install paths
+prefix:=/
+exec_prefix:=$(prefix)/usr
+bindir:=$(exec_prefix)/bin
+includedir:=$(exec_prefix)/include
+libdir:=$(exec_prefix)/lib
+mandir:=$(exec_prefix)/man
+moduledir:=$(prefix)/lib/modules/$(KERNELREV)/kernel/drivers/vme
+
+
+.PHONY: all install uninstall clean
+
+
+all:$(PROJNAME).o
+
+
+install: all $(DEVDIR)
+	install -m0644 -oroot -groot -D $(PROJNAME).o \
+                $(moduledir)/$(PROJNAME).o
+	install -m0755 -oroot -groot -d $(mandir)/man9
+	install -m0644 -oroot -groot -D ../doc/*.9 $(mandir)/man9/
+	/sbin/depmod
+
+
+uninstall: clean
+	rm -f $(moduledir)/$(PROJNAME).o
+	ls ../doc/*.9 | sed 's|../doc|$(mandir)/man9|' | xargs rm -f
+	/sbin/depmod
+
+
+clean:
+	find . -name "*.o" | xargs rm -f
+
+
+UNIV_OBJECTS:=vme_main.o \
+              vme_master.o \
+              vme_slave.o \
+              vme_dma.o \
+              vme_interrupt.o \
+              universe.o \
+              vme_ctl.o \
+              vme_vrai.o \
+              vme_location_monitor.o \
+              vmivme.o
+
+$(UNIV_OBJECTS):CFLAGS+=-D__KERNEL__ -DMODULE -DMODVERSIONS \
+                -include $(KERNELSRC)/include/linux/modversions.h \
+                -DEXPORT_SYMTAB -I$(KERNELSRC)/include -O2 \
+                -DVME_UNIVERSE_VERSION=\"$(MOD_VERSION)\" $(FIXUPFLAGS)
+$(PROJNAME).o:$(UNIV_OBJECTS)
+	$(LD) -r $(UNIV_OBJECTS) -o $@ $(LDFLAGS)
+
+$(UNIV_OBJECTS):$(KERNELSRC)/include/linux/modversions.h
+
+$(KERNELSRC)/include/linux/modversions.h:
+	$(error It appears that your kernel source is not installed. \
+                To build this module, the kernel source must be accessible \
+                via the path $(KERNELSRC).)
+
+universe.o: universe.c ../include/vme/universe.h Makefile
+
+vme_ctl.o: vme_ctl.c ../include/vme/universe.h \
+           ../include/vme/vme.h ../include/vme/vme_api.h \
+           ../include/vme/vmivme.h Makefile
+
+vme_dma.o: vme_dma.c ../include/vme/universe.h \
+           ../include/vme/vme.h ../include/vme/vme_api.h Makefile
+
+vme_interrupt.o: vme_interrupt.c ../include/vme/universe.h \
+                 ../include/vme/vme.h ../include/vme/vme_api.h \
+                 ../include/vme/vmivme.h Makefile
+
+vme_main.o: vme_main.c ../include/vme/vme.h \
+            ../include/vme/vme_api.h Makefile
+
+vme_master.o: vme_master.c ../include/vme/universe.h \
+              ../include/vme/vme.h ../include/vme/vme_api.h Makefile
+
+vme_slave.o: vme_slave.c ../include/vme/universe.h \
+             ../include/vme/vme.h ../include/vme/vme_api.h Makefile
+
+vme_vrai.o: vme_vrai.c ../include/vme/universe.h \
+            ../include/vme/vme.h ../include/vme/vme_api.h Makefile
+
+vme_location_monitor.o: vme_location_monitor.c \
+                        ../include/vme/universe.h ../include/vme/vme.h \
+                        ../include/vme/vme_api.h Makefile
+
+vmivme.o: vmivme.c ../include/vme/vmivme.h Makefile
+
+
+
+# Major and minor device number and the device name come from devices.txt
+# in kernel source documentation
+$(DEVDIR):
+	mkdir -p $@
+	mknod --mode=666 $(DEVDIR)/ctl c 221 8
+

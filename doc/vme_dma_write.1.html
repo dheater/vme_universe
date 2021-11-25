@@ -1,0 +1,130 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_dma_write.1</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_dma_write</b> - Writes hexadecimal values to a VMEbus address using DMA transfers or programmed I/O.
+</p>
+<h2>SYNOPSIS</h2>vme_dma_write [-a addr_mod] [-A vme_addr] [-d dwidth] [-f flags] [-F file]<h2>OPTIONS</h2>
+<dl>
+<dt><b>-a addr_mod</b></dt>
+<dd>
+<p>VMEbus address modifer. Possible values are:</p>
+
+- VME_A16S - Short supervisory access.<br>
+
+- VME_A16U - Short nonprivileged access<br>
+
+- VME_A24SB - Standard supervisory block transfer<br>
+
+- VME_A24SD - Standard supervisory data access<br>
+
+- VME_A24SMB - Standard supervisory multiplex block transfer<br>
+
+- VME_A24SP - Standard supervisory program access<br>
+
+- VME_A24UB - Standard nonprivileged block transfer<br>
+
+- VME_A24UD - Standard nonprivileged data access<br>
+
+- VME_A24UMB - Standard nonprivileged multiplex block transfer<br>
+
+- VME_A24UP - Standard nonprivileged program access<br>
+
+- VME_A32SB - Extended supervisory block transfer<br>
+
+- VME_A32SD - Extended supervisory data access<br>
+
+- VME_A32SMB - Extended supervisory multiplex block transfer<br>
+
+- VME_A32SP - Extended supervisory program access<br>
+
+- VME_A32UB - Extended nonprivileged block transfer<br>
+
+- VME_A32UD - Extended nonprivileged data access<br>
+
+- VME_A32UMB - Extended nonprivileged multiplex block transfer<br>
+
+- VME_A32UP - Extended nonprivileged program access<br>
+</dd>
+<dt><b>-A vme_addr</b></dt>
+<dd>
+<p>VMEbus address to begin transfer.</p>
+</dd>
+<dt><b>-d dwidth</b></dt>
+<dd>
+<p>Display data width.  Possible values are:</p>
+
+- VME_D8<br>
+
+- VME_D16<br>
+
+- VME_D32<br>
+
+- VME_D64<br>
+</dd>
+<dt><b>-f flags</b></dt>
+<dd>
+<p>Flags used to indicate special transfer features. The value specified will be an "OR" of the following possible values for the Tundra Universe II device.</p>
+
+- VME_DMA_64_BIT - Enable 64-bit PCI bus transfers.<br>
+<p>One of the following data widths can be used. If a data width is not specified, a default value is chosen based on the address modifier.</p>
+
+- VME_DMA_DW_8<br>
+
+- VME_DMA_DW_16<br>
+
+- VME_DMA_DW_32<br>
+
+- VME_DMA_DW_64<br>
+<p>One of the following settings of the VON counter can be used, to indicates how many bytes of data to transfer before the bus is released. If no flag is specified, the bus is held until the transfer completes.</p>
+
+- VME_DMA_VON_256<br>
+
+- VME_DMA_VON_512<br>
+
+- VME_DMA_VON_1024<br>
+
+- VME_DMA_VON_2048<br>
+
+- VME_DMA_VON_4096<br>
+
+- VME_DMA_VON_8192<br>
+
+- VME_DMA_VON_16384<br>
+<p>One of the following settings of the VOFF counter can be used, to indicates how many microseconds to wait before reaquiring the bus. If no flag is specified, the bus is immediately re-requested.</p>
+
+- VME_DMA_VOFF_16<br>
+
+- VME_DMA_VOFF_32<br>
+
+- VME_DMA_VOFF_64<br>
+
+- VME_DMA_VOFF_128<br>
+
+- VME_DMA_VOFF_256<br>
+
+- VME_DMA_VOFF_512<br>
+
+- VME_DMA_VOFF_1024<br>
+
+- VME_DMA_VOFF_2000<br>
+
+- VME_DMA_VOFF_4000<br>
+
+- VME_DMA_VOFF_8000<br>
+</dd>
+<dt><b>-F file</b></dt>
+<dd>
+<p>File containing the hexdata to transfer.
+</p>
+</dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Writes hexadecimal values to a VMEbus address using DMA transfers or programmed I/O. Hex values can be input on the command line, read from a file or taken from stdin. Programmed I/O is used it the addresses are not on the same alignment.
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_dma_read.1.html">vme_dma_read</a>(1)</body>
+</html>

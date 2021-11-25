@@ -1,0 +1,66 @@
+
+.TH "vme_set_max_retry" 3
+
+.SH "NAME"
+vme_set_max_retry - Sets the number of retries before the PCI master interface returns an error.
+
+
+.SH "SYNOPSIS"
+int vme_set_max_retry
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+int maxrtry
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B int maxrtry
+.br
+.in +5
+
+.br
+Number of retry attempts. This value must be a multiple of 64 between 0 and 960. A value of 0 causes an infinite retry attempt.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Sets the number of retries before the PCI master interface returns an error.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_get_max_retry(3)
+.br

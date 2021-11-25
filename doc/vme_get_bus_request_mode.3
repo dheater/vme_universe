@@ -1,0 +1,74 @@
+
+.TH "vme_get_bus_request_mode" 3
+
+.SH "NAME"
+vme_get_bus_request_mode - Returns the current VMEbus request mode
+
+
+.SH "SYNOPSIS"
+int vme_get_bus_request_mode
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+int * br_mode
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B int * br_mode
+.br
+.in +5
+
+.br
+Returns the bus request mode. Valid values are:
+
+.br
+
+.nf
+- VME_DEMAND
+.fi
+
+.nf
+- VME_FAIR
+.fi
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Returns the current VMEbus request mode.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_set_bus_request_mode(3)
+.br

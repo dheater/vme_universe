@@ -1,0 +1,155 @@
+VME_UNIVERSE Changelog
+
+3.6
++ Consolidated x86 and PPC versions into a single codebase -RMC
+
+3.5
++ Added paths to kernel include files in the lib and test Makefiles. -EB
++ Replaced deprecated kill_proc_info() with kill_proc(). -EB
++ Call remap_pfn_range() instead of remap_page_range() in 2.6.10+ kernels. -EB
+
+3.4
++ Add support for 2.6.XX kernel.  Still supports 2.4.XX kernel. -RMC
+
+3.3.1
++ Fixes for PPC DMA. -DLH.
+
+3.3
++ Fix SLSI window alignment. Should be 64MB, not 64KB. -DLH
++ Add reads to IH for int status and enable registers. -PL
++ Add system_controller module parameter. -PL
++ Correct A32 address range checks. -PL
++ Enforced 32-bit alignment for read-modify-write. -PL
++ Prevented master and slave windows created as module parameters
+  from defaulting to window 0. -PL
++ Documentation updates. -PL
+
+3.2.3
++ Restrict search for master window PCI address space to the bus that
+  the Tundra Universe is on. -OK
++ Add _PAGE_NO_CACHE | _PAGE_GUARDED for PPC vme_mmap. -OK
++ Add VM_LOCKED | VM_IO | VM_SHM to vma->vm_flags in vme_mmap. -OK
++ Add magic numbers to handles and error checking on all handles. -PL
+
+3.2.2
++ Add greater error checking and support for offset to RMW function. -DLH
++ Fix flags not being passed for VRAI and location monitor image. -PG
++ Release lock in vme_acquire_bus_ownership() on error. -LC
++ Fix interface version bug. -DLH
++ Pick up universe.h header file changes. -DLH
++ Documentation edits. -PG, DLH
+
+3.2.1
++ Handle occurrence of signal during DMA transfer. -DLH
+
+3.2
++ Add fixupflags for RedHat 9. -DLH
++ Update to Linus's code style. -DLH
++ Fix setting posted write value to 128. -DLH
++ Fix dynamic release of VRAI and location monitor images. -DLH
++ Documentation fixes. -DLH
+
+3.1.1
++ Add capability to set Universe II specific filter register. -DLH
++ Add fixup to determine which boards need filtering based on board id.
+  Not sure how this will affect non-VMIC boards. The default is to turn
+  the filter on, but that can be controlled through module parameters. -DLH
++ Documentation fixes. -DLH
+
+3.1
+3.0.1
++ Update release process. -DLH
++ Fix typo in Makefile module CFLAGS. -FB
++ Fix bug, windows not being disabled at initialization time. -DLH
++ Fix segfault on -p option to vme_peek. -DLH
+
+3.0
++ Fix the path the kernel source to use Linus's decreed standard. -DLH
+
+3.0_pre13
++ Change lock_irq's to lock_irqsaves's. -DLH
++ Change ISR from fast to slow. -DLH
++ Add feature set 06. -DLH
++ Use kernels defined vendor/device id's. -DLH
+
+3.0_pre12
++ Workaround added for the 16-MB DMA limit. -DLH
++ Change project name back to vme_universe. -DLH
++ Change readl to readw in interrupt bottom half handler ISA BERR handling.
+  Harmless error but still wrong. -DLH
+
+3.0_pre11
++ More documentation edits. -DLH
+
+3.0_pre10
++ Documentation edits -DLH, JC
++ Reset flags to 0 in strtoflags function in vme_test.c before 'or'ing in
+  values -DLH
++ Move VRAI and location monitor code to separate files. Add handles to their
+  create/release functions to avoid potential resource count issues presented
+  by using a counting semaphore. -DLH
++ Fix unamed unions within struct _vme_interrupt_handle in 
+  universe/vme_interrupt.c as it may break on some compilers. -DLH.
+
+3.0_pre9
++ Add support for 8-bit DMA transfers, but do not allow them for BLT because
+  the returned data is garbage. -DLH
++ Fix bug preventing 8-bit max data width on master windows -DLH
++ Add vme_register_image_[create|release] -DLH
++ Add vme_location_monitor_[create|release] -DLH
++ Fix yet another interrupt handling bug -DLH
++ Fix support for phys_addr parameter in vme_dma_buffer_create -DLH
++ Return a dummy handle value instead of NULL from vme_init -DLH
++ Add legacy interface (2.x) library -DLH
++ Release first cut at the documentation -DLH
++ Add mask to fix BERR addresses to conform to AM -DLH
+
+3.0_pre8
++ Add module parameters pci_lo_bound and pci_hi_bound -DLH
+
+3.0_pre7:
++ Fix another reserved interrupt bug in ISR -DLH
+
+3.0_pre6:
++ Fix SMP syntax errors in vme_ctl.c -DLH
++ Changed VME_ROR and VME_RWD to VME_RELEASE_ON_REQUEST and
+  VME_RELEASE_WHEN_DONE -DLH
++ Fix Makefile to create device file -DLH
++ Fixup SMP locking -DLH
++ Add interrupt proc page -DLH
++ Fix VMIC FPGA BERR address bug -DLH
++ Add extern "C" to vme_api.h -DLH
++ Add library version number -DLH
++ Pass module version number from Makefile -DLH
++ Fix bug in ISR; reserved interrupts causing endless loop -DLH
+
+3.0_pre5:
++ Moved example code back into this project and changed to project name to
+  VMIVME -DLH
++ Fixed 'make uninstall' -DLH
++ Added library/driver version compatability test -DLH
++ Added VMEbus read-modify-write -DLH
++ Added endian conversion bypass changed vme_[gs]et_[ms]ec functions to
+  vme_[gs]et_[master|slave]_endian_conversion and modified vme_endain example
+  code to suit -DLH
+
+3.0_pre4:
++ Trivial cleanup of vme_mmap function - DLH
+
+3.0_pre3:
++ Restructure interrupt handler to use tasklets. -DLH
++ Add test for VOWN to DMA functions. -DLH
++ Abandon non-blocking DMA transfer code. -DLH
++ Fix generate interrupt bug. -DLH
++ Add vme_master_window_translate function -DLH
++ Add sanity checks for VMEbus address -DLH
++ Change default release mode to release on request. -DLH
++ Don't allow the user to set the board to system controller. -DLH
++ Changed VMIC_* defines to VMIVME_* defines - DLH
+
+3.0_pre2:
++ Add bus handle to all API functions. -DLH
+
+3.0_pre1:
++ Initial release of 3rd generation Linux VMEbus driver. -DLH
+

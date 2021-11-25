@@ -1,0 +1,74 @@
+
+.TH "vme_set_arbitration_mode" 3
+
+.SH "NAME"
+vme_set_arbitration_mode - Sets the VMEbus arbitration mode.
+
+
+.SH "SYNOPSIS"
+int vme_set_arbitration_mode
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+int arb_mode
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B int arb_mode
+.br
+.in +5
+
+.br
+VMEbus arbitration mode. Valid values are:
+
+.br
+
+.nf
+- VME_ROUND_ROBIN
+.fi
+
+.nf
+- VME_PRIORITY
+.fi
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Sets the VMEbus arbitration mode.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_get_arbitration_mode(3)
+.br

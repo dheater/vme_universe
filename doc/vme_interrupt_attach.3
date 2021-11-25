@@ -1,0 +1,236 @@
+
+.TH "vme_interrupt_attach" 3
+
+.SH "NAME"
+vme_interrupt_attach - Associates the current process with a VME interrupt level.
+
+
+.SH "SYNOPSIS"
+int vme_interrupt_attach
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+vme_interrupt_handle_t * interrupt_handle,
+.br
+int level,
+.br
+int vector,
+.br
+int flags,
+.br
+void * data
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B vme_interrupt_handle_t * interrupt_handle
+.br
+.in +5
+
+.br
+Pointer to the interrupt handle to allocate.
+
+.br
+
+.in
+.br
+
+.B int level
+.br
+.in +5
+
+.br
+VMEbus interrupt level. Possible values for the Tundra Universe II device are:
+
+.br
+
+.nf
+- VME_INTERRUPT_VOWN
+.fi
+
+.nf
+- VME_INTERRUPT_VIRQ1
+.fi
+
+.nf
+- VME_INTERRUPT_VIRQ2
+.fi
+
+.nf
+- VME_INTERRUPT_VIRQ3
+.fi
+
+.nf
+- VME_INTERRUPT_VIRQ4
+.fi
+
+.nf
+- VME_INTERRUPT_VIRQ5
+.fi
+
+.nf
+- VME_INTERRUPT_VIRQ6
+.fi
+
+.nf
+- VME_INTERRUPT_VIRQ7
+.fi
+
+.nf
+- VME_INTERRUPT_DMA
+.fi
+
+.nf
+- VME_INTERRUPT_LERR
+.fi
+
+.nf
+- VME_INTERRUPT_BERR
+.fi
+
+.nf
+- VME_INTERRUPT_SW_IACK
+.fi
+
+.nf
+- VME_INTERRUPT_SW_INT
+.fi
+
+.nf
+- VME_INTERRUPT_SYSFAIL
+.fi
+
+.nf
+- VME_INTERRUPT_ACFAIL
+.fi
+
+.nf
+- VME_INTERRUPT_MBOX0
+.fi
+
+.nf
+- VME_INTERRUPT_MBOX1
+.fi
+
+.nf
+- VME_INTERRUPT_MBOX2
+.fi
+
+.nf
+- VME_INTERRUPT_MBOX3
+.fi
+
+.nf
+- VME_INTERRUPT_LM0
+.fi
+
+.nf
+- VME_INTERRUPT_LM1
+.fi
+
+.nf
+- VME_INTERRUPT_LM2
+.fi
+
+.nf
+- VME_INTERRUPT_LM3
+.fi
+
+.in
+.br
+
+.B int vector
+.br
+.in +5
+
+.br
+Interrupt vector. Possible values are 0 to 255 for VIRQ[1-7], or 0 for all other interrupt levels.
+
+.br
+
+.in
+.br
+
+.B int flags
+.br
+.in +5
+
+.br
+Interrupt flags. Indicates the type of interrupt notification.  Possible values are:
+
+.br
+
+.nf
+- VME_INTERRUPT_BLOCKING
+.fi
+
+.nf
+- VME_INTERRUPT_SIGEVENT
+.fi
+
+.nf
+- VME_INTERRUPT_RESERVE
+.fi
+
+.in
+.br
+
+.B void * data
+.br
+.in +5
+
+.br
+For VME_INTERRUPT_SIGEVENT, a sigevent structure describing the signal to return is. For VME_INTERRUPT_BLOCKING, a value is returned.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Associates the current process with a VME interrupt level.
+
+.br
+
+.br
+For certain interrupts, a data value is returned by either the reply parameter for blocking interrupts (VME_INTERRUPT_BLOCKING), or for Linux only by the signal value structure member if POSIX real-time signals are used (VME_INTERRUPT_SIGEVENT). In the case of VIRQ1-7, the value is the interrupt vector; in the case of a DMA interrupt, the value is the status of the DGCS register; in the case of BERR, the value is the address of the bus error; and in the case of a mailbox interrupt, the value is the mailbox data.
+
+.br
+
+.br
+Reserved interrupts (VME_INTERRUPT_RESERVE) are a special case with kernel modules only. This flag informs the VME driver that another module will process interrupts of the given VMEbus interrupt level. Not applicable with Solaris.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_interrupt_generate(3), vme_interrupt_release(3)
+.br

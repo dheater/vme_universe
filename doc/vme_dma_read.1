@@ -1,0 +1,322 @@
+
+.TH "vme_dma_read" 1
+
+.SH "NAME"
+vme_dma_read - Reads values from the VMEbus using DMA transfers or programmed I/O.
+
+.SH "SYNOPSIS"
+vme_dma_read [-a addr_mod] [-A vme_addr] [-d dwidth] [-e num_elem] [-f flags] [-p phys_addr]
+.SH "OPTIONS"
+
+.B -a addr_mod
+.in +5
+
+
+.br
+VMEbus address modifer. Possible values are:
+.br
+
+
+.nf
+- VME_A16S - Short supervisory access.
+.fi
+
+
+.nf
+- VME_A16U - Short nonprivileged access
+.fi
+
+
+.nf
+- VME_A24SB - Standard supervisory block transfer
+.fi
+
+
+.nf
+- VME_A24SD - Standard supervisory data access
+.fi
+
+
+.nf
+- VME_A24SMB - Standard supervisory multiplex block transfer
+.fi
+
+
+.nf
+- VME_A24SP - Standard supervisory program access
+.fi
+
+
+.nf
+- VME_A24UB - Standard nonprivileged block transfer
+.fi
+
+
+.nf
+- VME_A24UD - Standard nonprivileged data access
+.fi
+
+
+.nf
+- VME_A24UMB - Standard nonprivileged multiplex block transfer
+.fi
+
+
+.nf
+- VME_A24UP - Standard nonprivileged program access
+.fi
+
+
+.nf
+- VME_A32SB - Extended supervisory block transfer
+.fi
+
+
+.nf
+- VME_A32SD - Extended supervisory data access
+.fi
+
+
+.nf
+- VME_A32SMB - Extended supervisory multiplex block transfer
+.fi
+
+
+.nf
+- VME_A32SP - Extended supervisory program access
+.fi
+
+
+.nf
+- VME_A32UB - Extended nonprivileged block transfer
+.fi
+
+
+.nf
+- VME_A32UD - Extended nonprivileged data access
+.fi
+
+
+.nf
+- VME_A32UMB - Extended nonprivileged multiplex block transfer
+.fi
+
+
+.nf
+- VME_A32UP - Extended nonprivileged program access
+.fi
+
+
+.in
+
+.B -A vme_addr
+.in +5
+
+
+.br
+VMEbus address at which to begin transfer.
+.br
+
+
+.in
+
+.B -d dwidth
+.in +5
+
+
+.br
+Display data width.  Possible values are:
+.br
+
+
+.nf
+- VME_D8
+.fi
+
+
+.nf
+- VME_D16
+.fi
+
+
+.nf
+- VME_D32
+.fi
+
+
+.nf
+- VME_D64
+.fi
+
+
+.in
+
+.B -e num_elem
+.in +5
+
+
+.br
+Number of data width sized elements to transfer.
+.br
+
+
+.in
+
+.B -f flags
+.in +5
+
+
+.br
+Flags used to indicate special transfer features. The value specified will be an "OR" of the following possible values for the Tundra Universe II device.
+.br
+
+
+.nf
+- VME_DMA_64_BIT - Enable 64-bit PCI bus transfers
+.fi
+
+
+.br
+One of the following data widths can be used. If a data width is not specified, a default value is chosen based on the address modifier.
+.br
+
+
+.nf
+- VME_DMA_DW_8
+.fi
+
+
+.nf
+- VME_DMA_DW_16
+.fi
+
+
+.nf
+- VME_DMA_DW_32
+.fi
+
+
+.nf
+- VME_DMA_DW_64
+.fi
+
+
+.br
+One of the following settings of the VON counter can be used, to indicates how many bytes of data to transfer before the bus is released. If a flag is not specified, the bus is held until the transfer completes.
+.br
+
+
+.nf
+- VME_DMA_VON_256
+.fi
+
+
+.nf
+- VME_DMA_VON_512
+.fi
+
+
+.nf
+- VME_DMA_VON_1024
+.fi
+
+
+.nf
+- VME_DMA_VON_2048
+.fi
+
+
+.nf
+- VME_DMA_VON_4096
+.fi
+
+
+.nf
+- VME_DMA_VON_8192
+.fi
+
+
+.nf
+- VME_DMA_VON_16384
+.fi
+
+
+.br
+One of the following settings of the VOFF counter can be used, to indicates how many microseconds to wait before reaquiring the bus. If a flag is not specified, the bus is immediately re-requested.
+.br
+
+
+.nf
+- VME_DMA_VOFF_16
+.fi
+
+
+.nf
+- VME_DMA_VOFF_32
+.fi
+
+
+.nf
+- VME_DMA_VOFF_64
+.fi
+
+
+.nf
+- VME_DMA_VOFF_128
+.fi
+
+
+.nf
+- VME_DMA_VOFF_256
+.fi
+
+
+.nf
+- VME_DMA_VOFF_512
+.fi
+
+
+.nf
+- VME_DMA_VOFF_1024
+.fi
+
+
+.nf
+- VME_DMA_VOFF_2000
+.fi
+
+
+.nf
+- VME_DMA_VOFF_4000
+.fi
+
+
+.nf
+- VME_DMA_VOFF_8000
+.fi
+
+
+.in
+
+.B -p phys_addr
+.in +5
+
+
+.br
+Not applicable.
+.br
+
+
+.in
+
+
+.SH "DESCRIPTION"
+
+.br
+Reads values from the VMEbus using DMA transfers or programmed I/O.
+
+.br
+
+.SH "SEE ALSO"
+vme_dma_write(1)
+.br

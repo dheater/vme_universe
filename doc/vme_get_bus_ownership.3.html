@@ -1,0 +1,34 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vme_get_bus_ownership.3</title>
+</head>
+<body>
+<h2>NAME</h2>
+<p><b>vme_get_bus_ownership</b> - Returns the current VMEbus ownership status.
+</p>
+<h2>SYNOPSIS</h2>
+<b>int vme_get_bus_ownership
+(
+vme_bus_handle_t bus_handle, int * vown
+)
+</b><h2>PARAMETERS</h2>
+<dl>
+<dt><b>vme_bus_handle_t bus_handle</b></dt>
+<dd><p>Handle allocated by <a href="vme_init.3.html">vme_init</a>.
+</p></dd>
+<dt><b>int * vown</b></dt>
+<dd><p>Returns 1 if the VMEbus is owned and held, or 0 if it is free.
+</p></dd>
+</dl>
+<h2>DESCRIPTION</h2>
+<p>Returns the current VMEbus ownership status.
+</p>
+<h2>RETURNS</h2>
+<p>
+<p>0 on success, or -1 on failure.
+</p>
+</p>
+<h2>SEE ALSO</h2>
+<a href="vme_acquire_bus_ownership.3.html">vme_acquire_bus_ownership</a>(3), <a href="vme_release_bus_ownership.3.html">vme_release_bus_ownership</a>(3)</body>
+</html>

@@ -1,0 +1,43 @@
+ARCH         := ppc
+ROOTDIR	      = /home/7050/linux-2.4.26/
+HPATH         = $(ROOTDIR)include
+INCVME	      = ../include
+HOSTCC        = gcc
+CROSS_COMPILE = powerpc-linux-
+CC            = $(CROSS_COMPILE)gcc
+LD            = $(CROSS_COMPILE)ld
+LIBNAME       = libvme.so
+
+export	ARCH ROOTDIR HPATH INCVME HOSTCC CROSS_COMPILE CC 
+
+%.o: %.c
+	$(CC) -I$(HPATH) -I$(INCVME) -DARCH -fPIC -c -o $@ $<
+
+.PHONY: all clean
+
+all: $(LIBNAME).$(MOD_VERSION)
+
+LIB_OBJECTS:=   vme_main.o \
+	    vme_master.o \
+	    vme_slave.o \
+	    vme_dma.o \
+	    vme_interrupt.o \
+	    vme_ctl.o \
+	    vme_vrai.o \
+	    vme_location_monitor.o 
+
+$(LIBNAME).$(MOD_VERSION): $(LIB_OBJECTS)
+	$(CC) $(LDFLAGS) -shared $(LIB_OBJECTS) -Wl,-soname,$(LIBNAME).$(MOD_MAJOR) -o $@ 
+	ln -sf $(LIBNAME).$(MOD_VERSION) $(LIBNAME)
+
+clean:
+	find . -name "*\.o" | xargs rm -f
+	rm $(LIBNAME)*
+
+
+
+
+
+
+
+

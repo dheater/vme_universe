@@ -1,0 +1,66 @@
+
+.TH "vme_get_bus_request_level" 3
+
+.SH "NAME"
+vme_get_bus_request_level - Returns the current VMEbus request level.
+
+
+.SH "SYNOPSIS"
+int vme_get_bus_request_level
+.br
+(
+.br
+.in +5
+vme_bus_handle_t bus_handle,
+.br
+int * br_level
+.in
+)
+
+.SH "PARAMETERS"
+
+.B vme_bus_handle_t bus_handle
+.br
+.in +5
+
+.br
+Handle allocated by vme_init(3)
+.
+
+.br
+
+.in
+.br
+
+.B int * br_level
+.br
+.in +5
+
+.br
+Bus request level. Valid values are 0 to 3.
+
+.br
+
+.in
+.br
+
+
+.SH "DESCRIPTION"
+
+.br
+Returns the current VMEbus request level.
+
+.br
+
+.SH "RETURNS"
+
+
+.br
+0 on success, or -1 on failure.
+
+.br
+
+
+.SH "SEE ALSO"
+vme_set_bus_request_level(3)
+.br
